@@ -1,0 +1,15 @@
+[submodule "themes/pelican-clean-blog"]
+	path = themes/pelican-clean-blog
+	url = git@github.com:nervouna/pelican-clean-blog.git
+[submodule "themes/minimal-xy"]
+	path = themes/minimal-xy
+	url = https://github.com/petrnohejl/minimal-xy.git
+[submodule "themes/dev-random3"]
+	path = themes/dev-random3
+	url = https://github.com/22decembre/dev-random3.git
+[submodule "themes/nice-blog"]
+	path = themes/nice-blog
+	url = https://github.com/guilherme-toti/nice-blog.git
+[submodule "themes/pelican-octopress-theme"]
+	path = themes/pelican-octopress-theme
+	url = git@github.com:MrSenko/pelican-octopress-theme.git

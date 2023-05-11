@@ -1,0 +1,18 @@
+[project]
+name = "zhangdamao.com"
+version = "0.1.0"
+description = "Personal website of GUAN Xiaoyu."
+authors = [
+    { name = "damao", email = "xiaoyuguan@hotmail.com" }
+]
+dependencies = ["pelican[markdown]~=4.8.0", "invoke~=2.1.1", "livereload~=2.6.3"]
+readme = "README.md"
+requires-python = ">= 3.8"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
