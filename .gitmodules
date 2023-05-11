@@ -13,3 +13,9 @@
 [submodule "themes/pelican-octopress-theme"]
 	path = themes/pelican-octopress-theme
 	url = git@github.com:MrSenko/pelican-octopress-theme.git
+[submodule "themes/elegant"]
+	path = themes/elegant
+	url = git@github.com:Pelican-Elegant/elegant.git
+[submodule "themes/pelican-alchemy"]
+	path = themes/pelican-alchemy
+	url = git@github.com:nairobilug/pelican-alchemy.git

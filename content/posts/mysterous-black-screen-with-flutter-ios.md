@@ -1,28 +1,32 @@
-Title: 踩坑：Flutter 启动闪现黑屏
+Title: Flutter Startup Shows a Flashing Black Screen
 Date: 2022-09-22
-Category: 编程
+Slug: mysterous-black-screen-with-flutter-ios
+Category: Coding
 Tags: Flutter
+Summary: Any bug that cannot be seen on Google, 100% is your own stupidity.
 
-最近调试的时候总觉得 app 冷启动怪怪的，仔细看发现在 Launch Screen 消失后、主界面出现前有一个一闪而过的黑屏。
+Recently, I felt that the cold start of the app was a bit strange when debugging. Upon closer inspection, I noticed that there was a brief black screen flashing after the Launch Screen disappeared and before the main interface appeared.
 
-在网上搜索了一下，发现这是一个自 2019 年（或更早）就存在的问题。但是追了一下搜索结果，发现最终指向 flutter 仓库里的某个 close 掉的 issue。
+After searching online, I found that this has been a problem since 2019 or earlier. But after further investigation, I found that it ultimately pointed to a closed issue in the Flutter repository.
 
-一般来说，搜索不到的问题就是自己的问题。于是我决定 `flutter create bug` 看看有什么不同。
+Generally, if you can’t find a search result, it’s your own problem. So I decided to use `flutter create bug` to see if there were any differences.
 
-结果发现默认项目模板里的 `Info.plist` 有一处和我的写法不同：
+As a result, I found that the default project template’s Info.plist file has one difference from my implementation:
 
 ```xml
 <key>UILaunchStoryboardName</key>
 <string>LaunchScreen</string>
 ```
-而我的项目里则是：
+
+While in my project it was:
 
 ```xml
 <key>UILaunchStoryboardName</key>
 <string>LaunchScreen.storyboard</string>
 ```
-去掉了 `.storyboard` 拓展名，重新编译运行，黑屏消失了😓
 
-等有空的时候看看 flutter 源码，看看能不能找到是什么问题。
+Removing the .storyboard extension and rebuilding solved the black screen issue. 😓
 
-给 flutter repo 提了一个 [issue](https://github.com/flutter/flutter/issues/112160)，看看啥时候开发组打算修复。
+When I have time, I’ll take a look at the Flutter source code and see if I can find out what the problem is.
+
+I raised an [issue](https://github.com/flutter/flutter/issues/112160) on the Flutter repository, you can check when the development team plans to fix it.
