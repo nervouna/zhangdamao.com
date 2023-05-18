@@ -4,16 +4,16 @@ Slug: about-me
 
 ### Who am I
 
-* Name: Damao / Zhang Damao
+* Name: Guan Xiaoyu / Zhang Damao
 * Contact: [Email][7] or [Telegram][8].
 * Location: Beijing, China
 
 ### What I can do
 
 * Expert level: Product Design
-* Advanced level: Interaction Design
-* Average level: Strategy Design, Python
-* Stack Overflow level: Flutter, Javascript, PHP, Perl
+* Advanced level: UX Design
+* Average level: Strategy Design, Python, Flutter
+* Stack Overflow level: Javascript, PHP, Perl
 * Command not found level: Swift
 * God please no level: Visual Design and UI Design
 
