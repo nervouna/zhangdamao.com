@@ -15,6 +15,7 @@ EXTRA_PATH_METADATA = {
 }
 
 PATH = 'content'
+STATIC_PATHS = ['images', 'extra/favicon.ico', 'extra/apple-touch-icon.png']
 
 TIMEZONE = 'Asia/Shanghai'
 
