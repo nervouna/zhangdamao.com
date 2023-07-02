@@ -26,7 +26,8 @@ Slug: about-me
 
 ### What I do in my spare time
 
-* Recently playing with [OpenAI API][5]
+* Recently came up with a [YouTube Summarizer Script][9]
+* Wrote a simple notebook on [OpenAI API][5]
 * Developed [蜜蜂记账 / Bee Money][6]
 
 [1]: https://apps.apple.com/us/app/id532464577
@@ -37,3 +38,4 @@ Slug: about-me
 [6]: https://apps.apple.com/us/app/id1641451961
 [7]: mailto://contact@damao.io
 [8]: https://t.me/nervouna
+[9]: https://github.com/nervouna/YouTubeVideoSummarizer
