@@ -1,5 +1,5 @@
 Title: 吾等不觉得好笑
-Category: note
+Category: Notes
 Date: 2023-05-17 14:00
 Tags: Zeitgeist
 Slug: we-are-not-amused

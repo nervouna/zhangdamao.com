@@ -1,6 +1,6 @@
 Title: Quick Setup for Certbot
 Date: 2022-09-06 22:00:00
-Category: Server
+Category: Tools
 Tags: Certbot
 Slug: setup-https-via-certbot
 Summary: Certbot, good bot.
