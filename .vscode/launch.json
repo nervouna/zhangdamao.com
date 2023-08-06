@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Generate Meta Data",
+            "type": "python",
+            "request": "launch",
+            "program": "generate_post_header.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
