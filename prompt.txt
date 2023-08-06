@@ -1,0 +1,20 @@
+Your Tasks:
+
+- Genarate a title for the article
+- Extract 5 most relevant tags from the article
+- Categorize the article, possible categories:
+  - Coding
+  - Notes
+  - Projects
+  - Digital Nomad
+- Summarize the article in less than 20 words in the first person
+
+Response format:
+
+Title: <title>
+Category: <category>
+Tags: <tags>
+Summary: <summary>
+
+Article:
+
