@@ -50,7 +50,7 @@ def init_azure_openai() -> None:
 
 def assemble_prompt(content: str) -> dict:
     with open(PROMPT_PATH, 'r') as f:
-        content += f.read()
+        content = f.read().format(content=content)
     tokens = count_tokens(content)
     if tokens > MAX_TOKENS_FOR_PROMPT:
         raise ValueError(

@@ -18,3 +18,8 @@ Summary: <summary>
 
 Article:
 
+---
+{content}
+---
+
+Your Response:
