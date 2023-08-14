@@ -6,12 +6,8 @@ authors = [
     { name = "damao", email = "xiaoyuguan@hotmail.com" }
 ]
 dependencies = [
-    "GitPython==3.1.32",
     "Markdown==3.4.4",
-    "openai==0.27.8",
     "pelican==4.8.0",
-    "python-dotenv==1.0.0",
-    "tiktoken==0.4.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.11"
@@ -23,7 +19,12 @@ build-backend = "hatchling.build"
 
 [tool.rye]
 managed = true
-dev-dependencies = []
+dev-dependencies = [
+    "gitpython>=3.1.32",
+    "openai>=0.27.8",
+    "python-dotenv>=1.0.0",
+    "tiktoken>=0.4.0",
+]
 
 [tool.rye.scripts]
 gen = "python generate_post_header.py"
