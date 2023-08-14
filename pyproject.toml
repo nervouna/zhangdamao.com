@@ -5,11 +5,30 @@ description = "Personal website of GUAN Xiaoyu."
 authors = [
     { name = "damao", email = "xiaoyuguan@hotmail.com" }
 ]
-dependencies = ["pelican[markdown]~=4.8.0", "invoke~=2.1.1", "livereload~=2.6.3", "openai~=0.27.8", "tiktoken~=0.4.0", "GitPython~=3.1.32"]
+dependencies = [
+    "GitPython==3.1.32",
+    "Markdown==3.4.4",
+    "openai==0.27.8",
+    "pelican==4.8.0",
+    "python-dotenv==1.0.0",
+    "tiktoken==0.4.0",
+]
 readme = "README.md"
 requires-python = ">= 3.11"
-license = { text = "MIT" }
+license = { text = "WTFPL" }
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.rye.scripts]
+gen = "python generate_post_header.py"
+build = "pelican content"
+serve = "pelican --listen"
+
+[tool.hatch.metadata]
+allow-direct-references = true
