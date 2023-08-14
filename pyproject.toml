@@ -27,6 +27,7 @@ dev-dependencies = [
 ]
 
 [tool.rye.scripts]
+create = "python create_post.py"
 gen = "python generate_post_header.py"
 build = "pelican content"
 serve = "pelican --listen"
