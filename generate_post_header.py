@@ -146,11 +146,17 @@ def get_completion(prompt: dict) -> str:
     if not OPENAI_INITIALIZED:
         init_azure_openai()
 
-    response = openai.ChatCompletion.create(
-        deployment_id=DEPLOYMENT,
-        messages=[prompt],
-        temperature=0,
-    )
+    try:
+        response = openai.ChatCompletion.create(
+            deployment_id=DEPLOYMENT,
+            messages=[prompt],
+            temperature=0,
+        )
+    except openai.OpenAIError as e:
+        print('🚨 Error: OpenAI API error.\n')
+        print(f'Error: {e}\n')
+        print(f'Current prompt:\n{prompt}')
+        raise SystemExit
 
     tokens = response.usage.total_tokens
     cost = calculate_cost(tokens)
