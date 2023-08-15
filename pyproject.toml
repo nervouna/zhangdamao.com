@@ -30,7 +30,7 @@ dev-dependencies = [
 create = "python create_post.py"
 gen = "python generate_post_header.py"
 build = "pelican content"
-serve = "pelican --listen"
+serve = "pelican --listen --autoreload"
 
 [tool.hatch.metadata]
 allow-direct-references = true
