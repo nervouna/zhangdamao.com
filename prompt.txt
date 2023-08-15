@@ -5,6 +5,7 @@ Your Tasks:
 - Categorize the article, possible categories:
   - Coding
   - Notes
+  - Tools
   - Projects
   - Digital Nomad
 - Summarize the article in less than 20 words in the first person
