@@ -8,6 +8,7 @@ authors = [
 dependencies = [
     "Markdown==3.4.4",
     "pelican==4.8.0",
+    "ollama>=0.4.1",
 ]
 readme = "README.md"
 requires-python = ">= 3.11"
