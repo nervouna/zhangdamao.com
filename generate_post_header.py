@@ -2,6 +2,7 @@ import datetime
 import os
 import openai
 import tiktoken
+import ollama
 from dotenv import load_dotenv
 from git import Repo
 
@@ -134,6 +135,18 @@ def get_post_content(file_path: str) -> str:
         return file.read()
 
 
+def get_ollama_completion(prompt: str) -> str:
+    """Get completion from Ollama API.
+
+    Args:
+        prompt (str): Prompt for Ollama API.
+
+    Returns:
+        str: Completion from Ollama API.
+    """
+    return ollama.generate(model='llama3', prompt=prompt).response
+
+
 def get_completion(prompt: dict) -> str:
     """Get completion from OpenAI API.
 
@@ -199,18 +212,22 @@ def generate_date_header() -> str:
     return datetime.datetime.now().strftime('Date: %Y-%m-%d %H:%M:%S')
 
 
-def generate_headers(file_path: str) -> str:
+def generate_headers(file_path: str, use_ollama: bool = False) -> str:
     """Generate headers for post.
 
     Args:
         file_path (str): Path to post.
+        use_ollama (bool): Whether to use Ollama API for completion.
 
     Returns:
         str: Headers for post.
     """
     content = get_post_content(file_path)
     prompt = assemble_prompt(content)
-    completion = get_completion(prompt)
+    if use_ollama:
+        completion = get_ollama_completion(prompt['content'])
+    else:
+        completion = get_completion(prompt)
     slug = generate_slug_header(file_path)
     date = generate_date_header()
     return f'{completion}\n{date}\n{slug}'
@@ -242,12 +259,12 @@ def write_headers(file_path: str, headers: str) -> None:
         file.write(headers + '\n\n' + content)
 
 
-def main():
+def main(use_ollama: bool = False):
     new_posts = get_new_posts()
     for post in new_posts:
         if not is_header_already_written(post):
             try:
-                header = generate_headers(post)
+                header = generate_headers(post, use_ollama=use_ollama)
                 write_headers(post, header)
             except ValueError as e:
                 print(e)
@@ -258,4 +275,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(use_ollama=True)

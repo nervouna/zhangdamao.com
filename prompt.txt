@@ -10,7 +10,7 @@ Your Tasks:
   - Digital Nomad
 - Summarize the article in less than 20 words in the first person
 
-Response format:
+Reply with ONLY the required fields in the following format, Don't add any extra text:
 
 Title: <title>
 Category: <category>
