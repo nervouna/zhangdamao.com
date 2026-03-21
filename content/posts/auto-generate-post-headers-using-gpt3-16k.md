@@ -9,6 +9,10 @@ Slug: auto-generate-post-headers-using-gpt3-16k
 
 Use GitPython to find new blog posts, use OpenAI's API to generate the metadata.
 
+## Update
+
+I eventually rewrote this tool around Ollama and simplified it for my personal workflow. The newer version is described [here][4].
+
 ## The Problem
 
 I'm writing this blog using [Pelican][0]. Metadata of a post is stored in the header of the post file. A possible header may look like this:
@@ -88,3 +92,4 @@ I added a [configuration file][3] in the `.vscode` directory to run the script w
 [1]: https://en.wikipedia.org/wiki/Hallucination
 [2]: https://github.com/nervouna/zhangdamao.com/blob/main/generate_post_header.py
 [3]: https://github.com/nervouna/zhangdamao.com/blob/main/.vscode/launch.json
+[4]: https://zhangdamao.com/blog/2026/03/22/rewriting-my-post-header-generator-around-ollama.html
