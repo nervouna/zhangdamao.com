@@ -1,278 +1,250 @@
-import datetime
-import os
-import openai
-import tiktoken
-import ollama
-from dotenv import load_dotenv
+from __future__ import annotations
+
+from argparse import ArgumentParser, Namespace
+from collections.abc import Mapping, Sequence
+from datetime import datetime
+from pathlib import Path
+import re
+import sys
 from git import Repo
 
-load_dotenv()
-
-OPENAI_INITIALIZED = False
-MAX_TOKENS_FOR_GPT_MODEL = 16384
-MAX_TOKENS_FOR_PROMPT = MAX_TOKENS_FOR_GPT_MODEL-500
-PROMPT_PATH = os.path.abspath('prompt.txt')
-POST_DIR = os.path.abspath('content/posts')
-COST_PER_1000_TOKENS = 0.002
-DEPLOYMENT = os.getenv('DEPLOYMENT')
-if not DEPLOYMENT:
-    raise SystemExit('📝 You need to set your deployment in .env file.')
+import pelicanconf
 
 
-def get_untracked_files() -> list[str]:
-    """Get untracked files in current git repo.
-
-    Returns:
-        list[str]: List of untracked files.
-    """    ''''''
-    repo = Repo(os.getcwd())
-    return [item for item in repo.untracked_files]
-
-
-def is_in_post_dir(file_path: str) -> bool:
-    """Check if file is in post directory.
-
-    Args:
-        file_path (str): Path to file.
-
-    Returns:
-        bool: True if file is in post directory, False otherwise.
-    """
-    return os.path.abspath(file_path).startswith(POST_DIR)
+PROJECT_ROOT = Path(__file__).resolve().parent
+PROMPT_PATH = PROJECT_ROOT / 'prompt.txt'
+POST_DIR = PROJECT_ROOT / pelicanconf.PATH / pelicanconf.ARTICLE_PATHS[0]
+DEFAULT_MODEL = 'qwen3.5:0.8b'
+DEFAULT_TIMEOUT = 120.0
+REQUIRED_HEADERS = {'Title', 'Category', 'Tags', 'Summary', 'Date', 'Slug'}
+HEADER_PATTERN = re.compile(r'^(?P<key>[A-Za-z][A-Za-z ]*):\s*(?P<value>.+)$')
 
 
-def is_markdown_file(file_path: str) -> bool:
-    """Check if file is a markdown file.
-
-    Args:
-        file_path (str): Path to file.
-
-    Returns:
-        bool: True if file is a markdown file, False otherwise.
-    """
-    return file_path.endswith('.md')
-
-
-def init_azure_openai() -> None:
-    """Initialize OpenAI API.
-
-    Raises:
-        SystemExit: If API key, host, or version is not set in .env file.
-    """
-    openai.api_type = 'azure'
-    openai.api_key = os.getenv('API_KEY')
-    openai.api_base = os.getenv('API_HOST')
-    openai.api_version = os.getenv('API_VERSION')
-
-    if not openai.api_key:
-        raise SystemExit('📝 You need to set your API key in .env file.')
-    if not openai.api_base:
-        raise SystemExit('📝 You need to set your API host in .env file.')
-    if not openai.api_version:
-        raise SystemExit('📝 You need to set your API version in .env file.')
-
-    global OPENAI_INITIALIZED
-    OPENAI_INITIALIZED = True
-
-
-def assemble_prompt(content: str) -> dict:
-    """Assemble prompt for OpenAI API.
-
-    Args:
-        content (str): Content of post.
-
-    Raises:
-        ValueError: If article exceeds maximum token count.
-
-    Returns:
-        dict: Prompt for OpenAI API.
-    """
-    with open(PROMPT_PATH, 'r') as f:
-        content = f.read().format(content=content)
-    tokens = count_tokens(content)
-    if tokens > MAX_TOKENS_FOR_PROMPT:
-        raise ValueError(
-            f'🚨 Error: Article exceeds maximum token count. Current tokens: {tokens}')
-    return {'role': 'user', 'content': content}
+def parse_args() -> Namespace:
+    parser = ArgumentParser(
+        description='Generate Pelican headers for posts with Ollama.',
+    )
+    parser.add_argument(
+        'paths',
+        nargs='*',
+        help='Markdown files to process. Defaults to untracked posts when omitted.',
+    )
+    parser.add_argument(
+        '--model',
+        default=DEFAULT_MODEL,
+        help=f'Ollama model to use. Defaults to {DEFAULT_MODEL}.',
+    )
+    parser.add_argument(
+        '--timeout',
+        type=float,
+        default=DEFAULT_TIMEOUT,
+        help=(
+            'Request timeout in seconds. Use 0 to wait indefinitely. '
+            f'Defaults to {DEFAULT_TIMEOUT:g}.'
+        ),
+    )
+    think_group = parser.add_mutually_exclusive_group()
+    think_group.add_argument(
+        '--think',
+        action='store_true',
+        dest='think',
+        help='Enable thinking output for supported Ollama models.',
+    )
+    think_group.add_argument(
+        '--no-think',
+        action='store_false',
+        dest='think',
+        help='Disable thinking output for supported Ollama models.',
+    )
+    parser.set_defaults(think=False)
+    return parser.parse_args()
 
 
-def count_tokens(text: str) -> int:
-    """Count tokens in text.
-
-    Args:
-        text (str): Text to count tokens in.
-
-    Returns:
-        int: Number of tokens in text.
-    """
-    encoding = tiktoken.encoding_for_model('gpt-3.5-turbo')
-    return len(encoding.encode(text))
+def get_repo() -> Repo:
+    return Repo(PROJECT_ROOT)
 
 
-def get_new_posts() -> list[str]:
-    """Get new posts in post directory.
-
-    Returns:
-        list[str]: List of new posts.
-    """
-    new_posts = []
-    for file_path in get_untracked_files():
-        if is_in_post_dir(file_path) and is_markdown_file(file_path):
-            new_posts.append(file_path)
-    return new_posts
+def get_prompt_template() -> str:
+    return PROMPT_PATH.read_text(encoding='utf-8')
 
 
-def get_post_content(file_path: str) -> str:
-    """Get content of post.
+def resolve_candidate_paths(raw_paths: Sequence[str]) -> list[Path]:
+    if raw_paths:
+        return [Path(path).expanduser().resolve() for path in raw_paths]
 
-    Args:
-        file_path (str): Path to post.
-
-    Returns:
-        str: Content of post.
-    """
-    with open(file_path, 'r') as file:
-        return file.read()
+    repo = get_repo()
+    return [PROJECT_ROOT / Path(path) for path in repo.untracked_files]
 
 
-def get_ollama_completion(prompt: str) -> str:
-    """Get completion from Ollama API.
-
-    Args:
-        prompt (str): Prompt for Ollama API.
-
-    Returns:
-        str: Completion from Ollama API.
-    """
-    return ollama.generate(model='llama3', prompt=prompt).response
+def is_markdown_file(file_path: Path) -> bool:
+    return file_path.suffix.lower() == '.md'
 
 
-def get_completion(prompt: dict) -> str:
-    """Get completion from OpenAI API.
+def is_post_file(file_path: Path) -> bool:
+    return file_path.is_relative_to(POST_DIR)
 
-    Args:
-        prompt (dict): Prompt for OpenAI API.
 
-    Returns:
-        str: Completion from OpenAI API.
-    """
-    if not OPENAI_INITIALIZED:
-        init_azure_openai()
+def validate_post_path(file_path: Path) -> tuple[bool, str | None]:
+    if not file_path.exists():
+        return False, f'Skipping {file_path}: file does not exist.'
+    if not file_path.is_file():
+        return False, f'Skipping {file_path}: not a file.'
+    if not is_markdown_file(file_path):
+        return False, f'Skipping {file_path}: not a markdown file.'
+    if not is_post_file(file_path):
+        return False, f'Skipping {file_path}: not inside {POST_DIR}.'
+    return True, None
+
+
+def collect_posts(raw_paths: Sequence[str]) -> tuple[list[Path], list[str]]:
+    valid_posts: list[Path] = []
+    messages: list[str] = []
+    seen: set[Path] = set()
+
+    for file_path in resolve_candidate_paths(raw_paths):
+        normalized_path = file_path.resolve()
+        is_valid, message = validate_post_path(normalized_path)
+        if not is_valid:
+            if message:
+                messages.append(message)
+            continue
+        if normalized_path in seen:
+            continue
+        seen.add(normalized_path)
+        valid_posts.append(normalized_path)
+
+    return valid_posts, messages
+
+
+def get_post_content(file_path: Path) -> str:
+    return file_path.read_text(encoding='utf-8')
+
+
+def assemble_prompt(content: str) -> str:
+    return get_prompt_template().format(content=content)
+
+
+def get_ollama_completion(prompt: str, model: str, think: bool, timeout: float) -> str:
+    try:
+        import httpx
+        import ollama
+    except ImportError as exc:
+        raise RuntimeError(
+            'The ollama package is not available in the current Python environment.',
+        ) from exc
+
+    client_timeout = None if timeout <= 0 else timeout
+    client = ollama.Client(timeout=client_timeout)
 
     try:
-        response = openai.ChatCompletion.create(
-            deployment_id=DEPLOYMENT,
-            messages=[prompt],
-            temperature=0,
-        )
-    except openai.OpenAIError as e:
-        print('🚨 Error: OpenAI API error.\n')
-        print(f'Error: {e}\n')
-        print(f'Current prompt:\n{prompt}')
-        raise SystemExit
+        response = client.generate(model=model, prompt=prompt, think=think)
+    except httpx.TimeoutException as exc:
+        timeout_text = 'the configured timeout' if timeout <= 0 else f'{timeout:g}s'
+        raise RuntimeError(
+            'Ollama did not respond within '
+            f'{timeout_text}. If the model looks stuck, try `killall ollama` and rerun, '
+            'or pass --timeout 0 to wait indefinitely.'
+        ) from exc
 
-    tokens = response.usage.total_tokens
-    cost = calculate_cost(tokens)
-    print(f'💪 Headers generated. Used {tokens} tokens, costing ${cost:.4f}.')
-
-    return response.choices[0].message.content
+    if isinstance(response, Mapping):
+        return str(response['response']).strip()
+    return response.response.strip()
 
 
-def calculate_cost(tokens: int) -> float:
-    """Calculate cost of tokens.
-
-    Args:
-        tokens (int): Number of tokens.
-
-    Returns:
-        float: Cost of tokens.
-    """
-    return tokens * COST_PER_1000_TOKENS / 1000
-
-
-def generate_slug_header(file_path: str) -> str:
-    """Generate slug header.
-
-    Args:
-        file_path (str): Path to post.
-
-    Returns:
-        str: Slug header.
-    """
-    slug = os.path.basename(file_path).replace('.md', '')
-    return f'Slug: {slug}'
+def generate_slug_header(file_path: Path) -> str:
+    return f'Slug: {file_path.stem}'
 
 
 def generate_date_header() -> str:
-    """Generate date header.
-
-    Returns:
-        str: Date header.
-    """
-    return datetime.datetime.now().strftime('Date: %Y-%m-%d %H:%M:%S')
+    return datetime.now().strftime('Date: %Y-%m-%d %H:%M:%S')
 
 
-def generate_headers(file_path: str, use_ollama: bool = False) -> str:
-    """Generate headers for post.
-
-    Args:
-        file_path (str): Path to post.
-        use_ollama (bool): Whether to use Ollama API for completion.
-
-    Returns:
-        str: Headers for post.
-    """
+def generate_headers(file_path: Path, model: str, think: bool, timeout: float) -> str:
     content = get_post_content(file_path)
     prompt = assemble_prompt(content)
-    if use_ollama:
-        completion = get_ollama_completion(prompt['content'])
-    else:
-        completion = get_completion(prompt)
-    slug = generate_slug_header(file_path)
-    date = generate_date_header()
-    return f'{completion}\n{date}\n{slug}'
+    completion = get_ollama_completion(prompt, model=model, think=think, timeout=timeout)
+    return f'{completion}\n{generate_date_header()}\n{generate_slug_header(file_path)}'
 
 
-def is_header_already_written(file_path: str) -> bool:
-    """Check if headers are already written for post.
+def parse_leading_headers(content: str) -> dict[str, str]:
+    headers: dict[str, str] = {}
+    lines = content.lstrip('\ufeff').splitlines()
+    saw_header = False
 
-    Args:
-        file_path (str): Path to post.
+    for line in lines:
+        if not line.strip():
+            if saw_header:
+                break
+            continue
 
-    Returns:
-        bool: True if headers are already written, False otherwise.
-    """
-    with open(file_path, 'r') as file:
-        return file.readline().startswith('Title:')
+        match = HEADER_PATTERN.match(line)
+        if not match:
+            break
 
+        saw_header = True
+        headers[match.group('key')] = match.group('value')
 
-def write_headers(file_path: str, headers: str) -> None:
-    """Write headers to post.
-
-    Args:
-        file_path (str): Path to post.
-        headers (str): Headers for post.
-    """
-    with open(file_path, 'r+') as file:
-        content = file.read()
-        file.seek(0, 0)
-        file.write(headers + '\n\n' + content)
+    return headers
 
 
-def main(use_ollama: bool = False):
-    new_posts = get_new_posts()
-    for post in new_posts:
-        if not is_header_already_written(post):
-            try:
-                header = generate_headers(post, use_ollama=use_ollama)
-                write_headers(post, header)
-            except ValueError as e:
-                print(e)
-                print(f'Post: {post}')
-                continue
-        else:
-            print(f'🤔 Headers already written for {post}.')
+def has_existing_headers(file_path: Path) -> bool:
+    headers = parse_leading_headers(get_post_content(file_path))
+    return REQUIRED_HEADERS.issubset(headers)
+
+
+def write_headers(file_path: Path, headers: str) -> None:
+    content = get_post_content(file_path).lstrip('\ufeff')
+    file_path.write_text(f'{headers}\n\n{content}', encoding='utf-8')
+
+
+def format_runtime_options(model: str, think: bool, timeout: float) -> str:
+    timeout_text = 'infinite' if timeout <= 0 else f'{timeout:g}s'
+    return f'model={model}, think={think}, timeout={timeout_text}'
+
+
+def process_post(file_path: Path, model: str, think: bool, timeout: float) -> str:
+    if has_existing_headers(file_path):
+        return f'↷ Skipped {file_path}: headers already exist.'
+
+    write_headers(
+        file_path,
+        generate_headers(file_path, model=model, think=think, timeout=timeout),
+    )
+    return f'✓ Updated {file_path}'
+
+
+def main() -> int:
+    args = parse_args()
+    posts, messages = collect_posts(args.paths)
+
+    for message in messages:
+        print(message)
+
+    if not posts:
+        print('No eligible posts found.')
+        return 0
+
+    has_failures = False
+    for post in posts:
+        try:
+            print(
+                process_post(
+                    post,
+                    model=args.model,
+                    think=args.think,
+                    timeout=args.timeout,
+                )
+            )
+        except Exception as exc:  # pragma: no cover
+            has_failures = True
+            print(
+                f'Unexpected error for {post} '
+                f'({format_runtime_options(args.model, args.think, args.timeout)}): {exc}',
+                file=sys.stderr,
+            )
+
+    return 1 if has_failures else 0
 
 
 if __name__ == '__main__':
-    main(use_ollama=True)
+    raise SystemExit(main())
