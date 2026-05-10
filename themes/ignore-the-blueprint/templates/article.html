@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<article class="article">
+  <header class="article-header">
+    <h1 class="article-title">{{ article.title }}</h1>
+    <div class="article-meta">
+      <time datetime="{{ article.date.isoformat() }}">{{ article.date.strftime('%Y.%m.%d') }}</time>
+      {% if article.category %}
+      <span class="meta-sep"></span>
+      <a class="meta-category" href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
+      {% endif %}
+    </div>
+    {% if article.tags %}
+    <div class="article-tags">
+      {% for tag in article.tags %}
+      <a class="tag" href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </header>
+
+  <div class="article-content">
+    {{ article.content }}
+  </div>
+
+  {% if article.tags %}
+  <footer class="article-footer">
+    <div class="article-tags">
+      {% for tag in article.tags %}
+      <a class="tag" href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a>
+      {% endfor %}
+    </div>
+  </footer>
+  {% endif %}
+</article>
+{% endblock %}

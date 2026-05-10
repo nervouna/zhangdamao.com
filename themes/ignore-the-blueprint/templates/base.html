@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="{{ DEFAULT_LANG }}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {% if article and article.title %}
+  <title>{{ article.title }} — {{ SITENAME }}</title>
+  {% elif page and page.title %}
+  <title>{{ page.title }} — {{ SITENAME }}</title>
+  {% else %}
+  <title>{{ SITENAME }}</title>
+  {% endif %}
+
+  <link rel="preconnect" href="https://fonts.loli.net" />
+  <link rel="stylesheet"
+        href="https://fonts.loli.net/css2?family=Noto+Sans:ital,wght@0,400;0,500;1,400&family=Noto+Sans+SC:wght@400;500&family=Noto+Serif+SC:wght@300;500&family=Spectral:ital,wght@0,300;0,500;1,300&display=swap" />
+
+  <link rel="stylesheet" href="{{ SITEURL }}/theme/css/style.css" />
+
+  {% if FEED_ALL_ATOM %}
+  <link rel="alternate" type="application/atom+xml" title="{{ SITENAME }} Atom Feed" href="{{ SITEURL }}/{{ FEED_ALL_ATOM }}" />
+  {% endif %}
+
+  <link rel="icon" href="{{ SITEURL }}/favicon.ico" sizes="32x32" />
+  <link rel="apple-touch-icon" href="{{ SITEURL }}/apple-touch-icon.png" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-name" href="{{ SITEURL }}/">{{ SITENAME }}</a>
+    <nav class="site-nav">
+      <a href="{{ SITEURL }}/">Blog</a>
+      <a href="{{ SITEURL }}/about-me/">About</a>
+    </nav>
+  </header>
+
+  <main class="site-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-row">
+      <span>{{ AUTHOR }}</span>
+      <span class="footer-sep"></span>
+      {% for name, url in SOCIAL %}
+      <a href="{{ url }}">{{ name }}</a>{% if not loop.last %}<span class="footer-sep"></span>{% endif %}
+      {% endfor %}
+    </div>
+    {% if FEED_ALL_ATOM %}
+    <div class="footer-row footer-feed">
+      <a href="{{ SITEURL }}/{{ FEED_ALL_ATOM }}">Atom Feed</a>
+    </div>
+    {% endif %}
+  </footer>
+</body>
+</html>

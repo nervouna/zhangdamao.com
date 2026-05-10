@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if articles_page.object_list %}
+<ol class="post-list">
+{% for article in articles_page.object_list %}
+  <li class="post-item">
+    <time class="post-date" datetime="{{ article.date.isoformat() }}">
+      {{ article.date.strftime('%Y.%m.%d') }}
+    </time>
+    <h2 class="post-title">
+      <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a>
+    </h2>
+    {% if article.category %}
+    <a class="post-category" href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
+    {% endif %}
+    {% if article.summary %}
+    <p class="post-summary">{{ article.summary|striptags|truncate(160) }}</p>
+    {% endif %}
+  </li>
+{% endfor %}
+</ol>
+
+{% if articles_page.has_other_pages() %}
+<nav class="pagination">
+  {% if articles_page.has_previous() %}
+    {% set prev = articles_page.previous_page_number() %}
+    <a class="pagination-prev" href="{{ SITEURL }}/{% if prev == 1 %}index.html{% else %}index{{ prev }}.html{% endif %}">← Newer</a>
+  {% else %}
+  <span class="pagination-prev pagination-inactive">← Newer</span>
+  {% endif %}
+  <span class="pagination-info">{{ articles_page.number }} / {{ articles_page.paginator.num_pages }}</span>
+  {% if articles_page.has_next() %}
+    {% set next = articles_page.next_page_number() %}
+  <a class="pagination-next" href="{{ SITEURL }}/index{{ next }}.html">Older →</a>
+  {% else %}
+  <span class="pagination-next pagination-inactive">Older →</span>
+  {% endif %}
+</nav>
+{% endif %}
+
+{% else %}
+<div class="empty-state">
+  <p>Nothing here yet. Check back soon.</p>
+</div>
+{% endif %}
+{% endblock %}
