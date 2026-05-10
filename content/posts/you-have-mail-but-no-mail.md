@@ -14,7 +14,7 @@ You have mail.
 You type `mail`, expecting some exciting cron failure notification, and get:
 
 ```
-No mail for &lt;username&gt;
+No mail for <username>
 ```
 
 Cool. Thanks, computer.
@@ -38,7 +38,7 @@ ls -la /var/mail/$(whoami)
 In my case:
 
 ```
--rw-------@ 1 &lt;username&gt;  mail  1 Mar 26 23:13 /var/mail/&lt;username&gt;
+-rw-------@ 1 <username>  mail  1 Mar 26 23:13 /var/mail/<username>
 ```
 
 1 byte. That's it. A single byte of nothing useful.
@@ -75,7 +75,7 @@ Verify:
 
 ```bash
 ls -la /var/mail/$(whoami)
--rw-------@ 1 &lt;username&gt;  mail  0 Mar 27 02:18 /var/mail/&lt;username&gt;
+-rw-------@ 1 <username>  mail  0 Mar 27 02:18 /var/mail/<username>
 ```
 
 0 bytes. Restart your terminal — no more "You have mail."
