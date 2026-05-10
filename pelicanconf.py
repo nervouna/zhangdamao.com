@@ -21,12 +21,15 @@ TIMEZONE = 'Asia/Shanghai'
 
 DEFAULT_LANG = 'en'
 
-THEME = 'themes/pelican-alchemy/alchemy'
+THEME = 'themes/ignore-the-blueprint'
 PYGMENTS_RST_OPTIONS = {'linenos': 'table'}
 
 ARTICLE_PATHS = ['posts']
 ARTICLE_URL = 'blog/{date:%Y}/{date:%m}/{date:%d}/{slug}.html'
 ARTICLE_SAVE_AS = ARTICLE_URL
+
+PAGE_URL = '{slug}/'
+PAGE_SAVE_AS = '{slug}/index.html'
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = 'feed/all_atom.xml'
