@@ -1,0 +1,17 @@
+[project]
+name = "zhangdamao-com"
+version = "0.0.0"
+description = "Personal Pelican site and local content scripts for zhangdamao.com."
+readme = "README.md"
+requires-python = "==3.11.*"
+dependencies = [
+    "gitpython>=3.1.32",
+    # Keep SOCKS support because this shell auto-enables all_proxy=socks5://127.0.0.1:7890 for local Ollama/httpx use.
+    "httpx[socks]>=0.28.1",
+    "markdown==3.4.4",
+    "ollama>=0.4.1",
+    "pelican==4.8.0",
+]
+
+[tool.uv]
+package = false
