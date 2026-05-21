@@ -26,16 +26,18 @@ Slug: about-me
 
 ### What I do in my spare time
 
-* Recently came up with a [YouTube Summarizer Script][9]
-* Wrote a simple notebook on [OpenAI API][5]
-* Developed [蜜蜂记账 / Bee Money][6]
+* Recently came up with a [ZSH config bundle][9]
+* Built [LifeBook][10], a knowledge base that turns images, text, and URLs into structured notes, searchable memory, and podcast audio
+* Built [TrendingHunter][11], an automated pipeline for discovering trending open-source projects and generating LLM-assisted research reports
+* Built [StoryTeller][12], an AI fiction-writing pipeline from market research to draft, review, QA, and export
 
 [1]: https://apps.apple.com/us/app/id532464577
 [2]: https://apps.apple.com/cn/app/id504274740
 [3]: https://www.bilibili.com/movie/
 [4]: https://www.bilibili.com/anime/
-[5]: https://github.com/nervouna/open_ai_playbook_for_noobs
-[6]: https://apps.apple.com/us/app/id1641451961
 [7]: mailto://contact@damao.io
 [8]: https://t.me/nervouna
-[9]: https://github.com/nervouna/YouTubeVideoSummarizer
+[9]: https://github.com/nervouna/zsh-config
+[10]: https://github.com/nervouna/LifeBook
+[11]: https://github.com/nervouna/TrendingHunter
+[12]: https://github.com/nervouna/StoryTeller
