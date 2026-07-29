@@ -216,6 +216,10 @@ pyrightconfig.json
 pyvenv.cfg
 pip-selfcheck.json
 
+# Repository-owned Pages and readiness entry points.
+!scripts/
+!scripts/*.sh
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json

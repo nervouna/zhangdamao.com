@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "remoteName": "origin",
+  "productionBranch": "main",
+  "githubOwner": "nervouna",
+  "githubRepository": "zhangdamao.com",
+  "pagesProjectName": "zhangdamao-com",
+  "checkAppSlug": "cloudflare-workers-and-pages",
+  "checkName": "Cloudflare Pages",
+  "productionOrigin": "https://zhangdamao.com",
+  "buildScript": "scripts/build-pages.sh",
+  "buildMarker": "BLOGWRITER_PAGES_BUILD_V1",
+  "selectedBuildImage": "v2",
+  "pythonVersion": "3.11.15",
+  "uvVersion": "0.11.2",
+  "automaticDependencyInstall": false,
+  "publishSettings": "publishconf.py",
+  "outputDirectory": "output",
+  "redirectsSource": "content/extra/_redirects"
+}

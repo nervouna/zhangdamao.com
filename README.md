@@ -42,6 +42,16 @@ Build the site:
 make html
 ```
 
+Cloudflare Pages uses the tracked production entry point:
+
+```bash
+bash scripts/build-pages.sh
+```
+
+The Pages dashboard must select Python 3.11.15, set
+`SKIP_DEPENDENCY_INSTALL=1`, and use `output` as the build output directory.
+The script pins uv, performs a locked sync, and builds with `publishconf.py`.
+
 Serve the site locally with auto reload:
 
 ```bash

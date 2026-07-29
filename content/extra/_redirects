@@ -1,0 +1,3 @@
+# BlogWriter-managed exact same-origin redirects.
+# Static rules must remain before any dynamic rules.
+/__blogwriter-pages-readiness__/ /about-me/ 301
