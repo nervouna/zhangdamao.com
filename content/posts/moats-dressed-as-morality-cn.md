@@ -4,7 +4,8 @@ Slug: moats-dressed-as-morality-cn
 Category: Notes
 Tags: Zeitgeist, AI
 Summary: 商业竞争不丢人，丢人的是把生意包装成圣战。
-Status: draft
+
+[English version]({filename}moats-dressed-as-morality.md).
 
 最近又看到一批关于模型蒸馏和开源权重的观点，说新也不算新。
 
@@ -52,7 +53,7 @@ Anthropic 有一件被人诟病了很久的事：大规模扫描书籍用来训�
 
 ## 立规矩才能不烧心？
 
-用用户协议约束一个商业产品，本身没有问题。但试图在道德上拔高、占据高地，背后还有更深的动机。营销只想让你喜欢它，占据道德高地是在抢先制定规则。
+用用户协议约束一个商业产品，本身没有问题。但试图在道德上拔高、占据高地，就不只是营销了。营销只想让你喜欢它，占据道德高地是在抢先制定规则。
 
 法律总是来得慢。在立法者反应过来之前，谁先让公众相信一件事不道德，后面的条文多半就照着谁的说法写。所以第一步是起名字。「蒸馏」是技术词，「蒸馏攻击」已经是罪名了，Anthropic 今年 2 月那篇文章的标题就叫 [Detecting and preventing distillation attacks](https://www.anthropic.com/news/detecting-and-preventing-distillation-attacks)。思维链明明是模型的输出，被叫成「机密」之后，学习这些输出就成了「窃取」。
 
