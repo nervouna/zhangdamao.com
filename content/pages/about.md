@@ -3,37 +3,32 @@ Date: 2023-05-11
 Modified: 2026-11-21
 Slug: about-me
 
-I'm Zhang Damao, a product designer who now spends most of his time building software. I write the spec, review the result, and decide what ships; coding agents write most of the code.
+I'm Zhang Damao, a product manager. By day I do product design for Android tablets at Xiaomi, where I look after the Xiaomi Pad series. By night I ship software I could never have written by hand: coding agents write the code, and I get to be the picky reviewer.
 
-### What I'm building now
+### What I'm building in my spare time
 
-* [InkFlow][inkflow] (墨流): a Pinyin input method for macOS that runs on your own machine, with mixed Chinese and English input, on-device voice dictation, and optional AI suggestions.
-* [Omarchy on the Xiaomi Pad 9 Pro][omarchy-pad]: a port that boots Arch Linux and Hyprland natively on an Android tablet, with no Android framework and no chroot.
-* [Piccolo][piccolo]: a macOS menu bar app that moves, resizes and arranges windows from the keyboard. My first paid product.
-* [Alfred][alfred]: a personal research assistant built on the Claude Agent SDK, with a native iOS app to talk to it.
-* [AppFinder][appfinder]: a keyboard launcher for macOS that keeps a Chinese input method from catching your search.
-* [Macchiato][macchiato]: a menu bar app that generates a light and a dark abstract wallpaper every day, in colours that follow the 24 solar terms.
+* [InkFlow][inkflow] (墨流): a Pinyin input method for macOS that runs on your own machine, with on-device voice dictation and optional AI suggestions. The one I keep coming back to, mostly because I type on it all day and have nobody else to blame.
+* [Omarchy on the Xiaomi Pad 9 Pro][omarchy-pad]: Arch Linux and Hyprland booting natively on an Android tablet, with no Android framework and no chroot. A strange hobby for someone whose day job is Android tablets.
+* [Alfred][alfred]: a personal research assistant built on the Claude Agent SDK, with an iOS app to talk to it. It has exactly one user, and he files a lot of bugs.
 
-### Games
+The rest of the pile is on [GitHub][github].
 
-* [Chu–Han Contention][chess] (楚漢爭鋒): xiangqi staged as a 3D battle, with real troops, a real river, and a cinematic for every capture. Runs in the browser.
-* [Durian Slug][durian] (榴莲弹头): a pixel-art run-and-gun set in Penang, with a roguelite mode and local co-op. Also runs in the browser.
+### What I can do
 
-### Smaller tools
+* Expert level: Product Design
+* Advanced level: UX Design, writing specs for coding agents and arguing with them in review
+* Average level: Strategy Design, Python
+* Ask the agent level (formerly Stack Overflow level): JavaScript, TypeScript, PHP, Perl
+* Command not found level: Swift, although agents under my supervision have shipped several Swift apps
+* God please no level: Visual Design and UI Design
 
-* [Quota][quota]: a menu bar app that shows how much of each AI subscription's quota is left.
-* [ClickClick][clickclick]: a menu bar app that counts key presses per keyboard and stores nothing but the counts.
-* [DaysCounter][dayscounter]: iOS and macOS widgets that count down to the next all-day event in your calendars.
-* [Claude Pet][claude-pet]: a voxel desktop mascot that acts out what Claude Code is doing.
-* [agent-workflows][agent-workflows] and [codex-plugins][codex-plugins]: the skills and plugins I use with coding agents.
-* Earlier: [LifeBook][lifebook], [TrendingHunter][trendinghunter], [StoryTeller][storyteller], and a [ZSH config bundle][zsh].
-
-### Before that
+### What I have done
 
 * Product Design at [Bloomberg Businessweek China][bbw] (2012-2015)
 * Product Design at [Maoyan][maoyan] (2017-2019)
 * Product Design for Bilibili's [Movies][bili-movie] and [Anime][bili-anime] (2019-2021)
 * Product Design for Xiaomi's Browser and Game Center (2021-2022)
+* Product Design for Xiaomi's Android tablets, the Xiaomi Pad series (now)
 
 ### Contact
 
@@ -42,22 +37,8 @@ I'm Zhang Damao, a product designer who now spends most of his time building sof
 
 [inkflow]: https://github.com/nervouna/InkFlow
 [omarchy-pad]: https://github.com/nervouna/omarchy-on-xiaomi-pad-9-pro
-[piccolo]: https://piccolo.damao.io
 [alfred]: https://github.com/nervouna/alfred
-[appfinder]: https://github.com/nervouna/appfinder
-[macchiato]: https://github.com/nervouna/macchiato
-[chess]: https://nervouna.github.io/fable-chess/
-[durian]: https://nervouna.github.io/TheDurianGame/
-[quota]: https://github.com/nervouna/hard-viber
-[clickclick]: https://github.com/nervouna/clickclick
-[dayscounter]: https://github.com/nervouna/dayscounter
-[claude-pet]: https://github.com/nervouna/claude-pet
-[agent-workflows]: https://github.com/nervouna/agent-workflows
-[codex-plugins]: https://github.com/nervouna/codex-plugins
-[lifebook]: https://github.com/nervouna/LifeBook
-[trendinghunter]: https://github.com/nervouna/TrendingHunter
-[storyteller]: https://github.com/nervouna/StoryTeller
-[zsh]: https://github.com/nervouna/zsh-config
+[github]: https://github.com/nervouna
 [bbw]: https://apps.apple.com/us/app/id532464577
 [maoyan]: https://apps.apple.com/cn/app/id504274740
 [bili-movie]: https://www.bilibili.com/movie/
