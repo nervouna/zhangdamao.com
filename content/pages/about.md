@@ -28,7 +28,7 @@ The rest of the pile is on [GitHub][github].
 * Product Design at [Maoyan][maoyan] (2017-2019)
 * Product Design for Bilibili's [Movies][bili-movie] and [Anime][bili-anime] (2019-2021)
 * Product Design for Xiaomi's Browser and Game Center (2021-2022)
-* Product Design for Xiaomi's Android tablets, the Xiaomi Pad series (now)
+* Product Design for Xiaomi's Android tablets, the Xiaomi Pad series (2023-now)
 
 ### Contact
 
