@@ -36,7 +36,18 @@ Use `make publish` only when `publishconf.py` exists and is intentionally config
 
 Keep Markdown metadata consistent with existing posts. Use lowercase, hyphenated slugs and filenames, for example `content/posts/optimizing-zsh-config-on-mac.md`.
 
+Bilingual posts are two files with the same `Date`: `<slug>.md` (English) and `<slug>-cn.md` (Chinese, slug also ends in `-cn`). Each opens with a link to the other, written as `[中文版]({filename}<slug>-cn.md)` and `[English version]({filename}<slug>.md)`.
+
 Theme edits should follow the existing warm editorial style in `themes/ignore-the-blueprint/static/css/style.css`. Keep templates simple and avoid unrelated formatting churn.
+
+## Writing Style
+
+- Chinese text uses 「」 for quotes, with a space between Chinese and Latin words or numbers.
+- State the post's own argument in the opening paragraph; keep background and summaries of other people's writing short and later.
+- No parallelism or antithesis built for effect, and no filler transitions. Sharp is fine, ornamental is not.
+- Read any cited article in full before paraphrasing it, and check its title, author and date against the source.
+- The author edits drafts directly on the PR branch. Fetch and fast-forward before every edit, and keep their wording.
+- To turn a voice memo into a post, use the `draft-post-from-recording` skill in `.claude/skills/`.
 
 ## Testing Guidelines
 
@@ -52,6 +63,14 @@ For visual or layout changes, also run a local server and inspect the affected p
 make devserver PORT=8000
 ```
 
+CI runs a stricter build; run it before pushing:
+
+```bash
+uv run pelican content -s publishconf.py -o output --fatal warnings
+```
+
+`publishconf.py` disables draft output, so a post with `Status: draft` is not rendered on Cloudflare previews or in production. To preview a post on a PR, leave the draft status off; nothing is published until the PR merges.
+
 ## Commit & Pull Request Guidelines
 
 Use concise imperative commit messages with a type prefix, matching recent history:
@@ -65,6 +84,10 @@ chore: switch to custom theme and fix Makefile pelican path
 Allowed types include `feat`, `fix`, `doc`, `chore`, `refactor`, `test`, and `style`.
 
 Pull requests should include a short summary, verification steps such as `make html`, and screenshots for visual theme changes.
+
+Merging to `main` deploys to production through Cloudflare Pages within a few minutes. Every PR branch gets a preview at `https://<branch-with-slashes-as-dashes>.zhangdamao-com.pages.dev`. Articles live at `/blog/YYYY/MM/DD/<slug>`.
+
+Squash-merge PRs with the title `<type>: <summary> (#N)`. Merge only when the author asks.
 
 ## Security & Configuration Tips
 

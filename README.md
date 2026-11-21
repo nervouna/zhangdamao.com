@@ -8,7 +8,7 @@ This site is:
 * Managed with [mise][1] and [uv][2]
 * Deployed on [CloudFlare][3]
 
-The content is 100% hand written.
+The opinions are all mine. The typing is increasingly shared: newer posts often start as a voice memo, get drafted with Claude, and are edited by hand before they go out. Older posts were written entirely by hand.
 
 ## Setup
 
