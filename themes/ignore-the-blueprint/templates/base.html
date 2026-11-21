@@ -11,6 +11,52 @@
   <title>{{ SITENAME }}</title>
   {% endif %}
 
+  {% if article and article.title %}
+    {% set meta_title = article.title|striptags %}
+    {% set meta_description = article.summary|striptags|trim %}
+    {% set meta_url = SITEURL ~ '/' ~ article.url %}
+    {% set meta_image = article.og_image %}
+    {% set meta_type = 'article' %}
+  {% elif page and page.title %}
+    {% set meta_title = page.title|striptags %}
+    {% set meta_description = SITESUBTITLE %}
+    {% set meta_url = SITEURL ~ '/' ~ page.url %}
+    {% set meta_image = OG_DEFAULT_IMAGE %}
+    {% set meta_type = 'website' %}
+  {% else %}
+    {% set meta_title = SITENAME %}
+    {% set meta_description = SITESUBTITLE %}
+    {% set meta_url = SITEURL ~ '/' %}
+    {% set meta_image = OG_DEFAULT_IMAGE %}
+    {% set meta_type = 'website' %}
+  {% endif %}
+  {% if meta_image and not meta_image.startswith('http') %}
+    {% set meta_image = SITEURL ~ '/' ~ meta_image %}
+  {% endif %}
+  <meta name="description" content="{{ meta_description|e }}" />
+  <meta property="og:site_name" content="{{ SITENAME|e }}" />
+  <meta property="og:type" content="{{ meta_type }}" />
+  <meta property="og:title" content="{{ meta_title|e }}" />
+  <meta property="og:description" content="{{ meta_description|e }}" />
+  <meta property="og:url" content="{{ meta_url }}" />
+  {% if article and article.title %}
+  <meta property="article:published_time" content="{{ article.date.isoformat() }}" />
+  {% endif %}
+  {% if meta_image %}
+  <meta property="og:image" content="{{ meta_image }}" />
+  <meta property="og:image:alt" content="{{ meta_title|e }}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="{{ meta_image }}" />
+  {% else %}
+  <meta name="twitter:card" content="summary" />
+  {% endif %}
+  <meta name="twitter:title" content="{{ meta_title|e }}" />
+  <meta name="twitter:description" content="{{ meta_description|e }}" />
+  {% if TWITTER_USERNAME %}
+  <meta name="twitter:site" content="@{{ TWITTER_USERNAME }}" />
+  <meta name="twitter:creator" content="@{{ TWITTER_USERNAME }}" />
+  {% endif %}
+
   {% block extra_head %}{% endblock %}
 
   <link rel="preconnect" href="https://fonts.loli.net" />
