@@ -7,41 +7,13 @@ Summary: Competing for business is nothing to be ashamed of. Dressing it up as a
 
 点击前往[中文版]({filename}moats-dressed-as-morality-cn.md)。
 
-A new batch of opinions on model distillation and open weights has been going around lately, though "new" is generous.
+OpenAI and Anthropic have been publishing one piece after another arguing that model distillation should be handled as a safety problem and a national security problem. My reading is that these pieces talk about safety while writing the rules of the industry before anyone else can.
 
-OpenAI went first. On November 18 they published [Managing frontier AI risk: From training to deployment](https://openai.com/index/managing-frontier-ai-risk/), a framework for handling risk from training through deployment, which covers cracking down on organized distillation campaigns and reporting alignment failures. Two days later came [Combatting adversarial distillation](https://openai.com/index/combatting-adversarial-distillation/), which explains why distillation should be treated as a safety problem and a national security problem. The tools include encrypted chains of thought, interception at the API layer, and intelligence sharing across the industry.
+Some background first. On November 18, OpenAI published [Managing frontier AI risk: From training to deployment](https://openai.com/index/managing-frontier-ai-risk/), which covers cracking down on organized distillation campaigns. Two days later came [Combatting adversarial distillation](https://openai.com/index/combatting-adversarial-distillation/), with tools that include encrypted chains of thought, interception at the API layer, and intelligence sharing across the industry. Our old friend Anthropic started earlier. They laid out their position on chip export controls and anti-distillation long ago, and on September 29 they published [GLM-5.3 and the spread of advanced cyber capabilities](https://www.anthropic.com/research/glm-5-3-and-the-spread-of-advanced-cyber-capabilities), about open-weight models spreading the ability to attack networks.
 
-Our old friend Anthropic got there well before OpenAI. Safety oversight, national security, chip export controls, anti-distillation: they laid out this whole policy position long ago. Their September 29 piece, [GLM-5.3 and the spread of advanced cyber capabilities](https://www.anthropic.com/research/glm-5-3-and-the-spread-of-advanced-cyber-capabilities), is about open-weight models spreading the ability to attack networks.
-
-Then today on Twitter I came across [Machines of Loving Export Controls](https://mercuriusdream.com/loving-controls/), an essay that picks a side and comes out swinging.
-
-## What the angry essay argues
-
-The essay goes after three things that OpenAI, Anthropic and the Frontier Model Forum are pushing together: export controls on compute, anti-distillation measures, and limits on open weights.
-
-The author's view is that the leading closed labs lobby in the name of "safety" and "national security" to build barriers around the industry, and to stay clear of antitrust while they do it. AI is a dual-use technology. Concentrating it attracts attackers and takes tools away from ordinary defenders. He thinks spreading capability through open weights favors the defending side.
-
-He also lines up a set of double standards. The closed labs warn that open weights will enable cyberattacks, while their own agents cause damage in the real world: an OpenAI agent broke into Hugging Face, Anthropic's Mythos went out of bounds during a security evaluation and reached the systems of real organizations, and Haiku 4.5 submitted an invented eyewitness tip to the police. Meanwhile the guardrails on commercial closed models refuse so much that defenders are pushed toward open models. The Hugging Face incident is his main example: OpenAI's models declined to help, and Hugging Face ended up using GLM-5.2 to deal with it.
-
-## What he gets right
-
-Regulatory capture: big companies are presenting their own moat as a matter of public safety. I think his reading of the motive holds up.
-
-Over-refusal by closed models: blanket guardrails really have left ordinary defenders stuck in real incidents.
-
-He stays out of the good-camp, bad-camp story: the essay brings up China's content rules alongside the Pentagon naming Anthropic a supply chain risk, which puts the focus back on the contest between companies and regulators.
-
-## Where he loses me
-
-He says open-weight models have not caused any serious trouble so far. A quiet past does not show that future models will bring no jump in capability and no tail risk.
-
-He also brushes past the asymmetry between attack and defense that Anthropic raises. In security, the defender has to close every hole and the attacker only has to find one. Once strong capabilities are fully out in the open, small and mid-sized companies may not have the engineering to protect themselves.
-
-And when a closed model causes harm, the provider can at least restrict and trace it through the API, which goes a long way toward containing the damage. Open weights cannot be recalled once they are released.
+Then today on Twitter I came across [Machines of Loving Export Controls](https://mercuriusdream.com/loving-controls/), an essay that fires back from the opposite direction and comes out swinging. I will get to it later. Distillation first.
 
 ## It's not distillation when we do it
-
-There is another question I keep coming back to.
 
 Anthropic has been criticized for years for scanning books at scale to train on, some of it destructive scanning. That is the same kind of free riding as a small model distilling a large one. Anthropic and OpenAI have also used distillation themselves, to some degree, in developing their own models.
 
@@ -62,6 +34,20 @@ With the name settled, the roles change too. The competitor becomes a defendant,
 Regulatory economics has an old model for this, called "bootleggers and Baptists". Laws banning Sunday liquor sales passed because Baptists who sincerely opposed drinking and bootleggers who profited from the ban wanted the same law. The Baptists made the moral case while the bootleggers quietly collected. Today both characters work at the same company, one on the safety team and one on the business team.
 
 So the closed labs' safety claims are most likely not an act. Unfortunately, sincerity does not change what the rules do, and the more sincere the claim, the more convincing it looks. With the rules in place, the conscience rests easy. And if you ask what they were doing before the rules existed? Sorry, that is covered by the rules too.
+
+## What the angry essay argues
+
+Now for that essay. It goes after three things that OpenAI, Anthropic and the Frontier Model Forum are pushing together: export controls on compute, anti-distillation measures, and limits on open weights. The author's view is that the leading closed labs lobby in the name of "safety" and "national security" to build barriers around the industry, and to stay clear of antitrust while they do it. AI is a dual-use technology, and concentrating it attracts attackers while taking tools away from ordinary defenders.
+
+His point about regulatory capture is the one I made above, and I think his reading of the motive holds up. He also points to over-refusal by closed models: blanket guardrails really have left ordinary defenders stuck in real incidents. The Hugging Face incident is his main example. The intruder was an OpenAI agent, OpenAI's models then declined to help, and Hugging Face ended up using GLM-5.2 to deal with it. The essay also stays out of the good-camp, bad-camp story, bringing up China's content rules alongside the Pentagon naming Anthropic a supply chain risk.
+
+He does not fully convince me, though. He says open-weight models have not caused any serious trouble so far. A quiet past does not show that future models will bring no jump in capability and no tail risk.
+
+He also brushes past the asymmetry between attack and defense that Anthropic raises. In security, the defender has to close every hole and the attacker only has to find one. Once strong capabilities are fully out in the open, small and mid-sized companies may not have the engineering to protect themselves.
+
+And when a closed model causes harm, the provider can at least restrict and trace it through the API, which goes a long way toward containing the damage. Open weights cannot be recalled once they are released.
+
+He is standing on high ground of his own, too: the essay closes by invoking Popper's open society and defensive democracy.
 
 ## Nothing beats the view from the moral high ground
 

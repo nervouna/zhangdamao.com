@@ -7,41 +7,13 @@ Summary: 商业竞争不丢人，丢人的是把生意包装成圣战。
 
 [English version]({filename}moats-dressed-as-morality.md).
 
-最近又看到一批关于模型蒸馏和开源权重的观点，说新也不算新。
+最近 OpenAI 和 Anthropic 接连发文，要把模型蒸馏当成安全问题和国家安全问题来处理。我读完的感受是，这些文章名义上谈安全，实际上是在抢先给行业制定规则。
 
-先是 OpenAI。11 月 18 日，他们发了一篇 [Managing frontier AI risk: From training to deployment](https://openai.com/index/managing-frontier-ai-risk/)，讲从训练到部署的风险管理框架，其中包含打击有组织的模型蒸馏行动，以及模型对齐失败的报告机制。两天后又发了一篇 [Combatting adversarial distillation](https://openai.com/index/combatting-adversarial-distillation/)，解释为什么要把蒸馏当成安全问题和国家安全问题，手段包括加密思维链、API 层拦截，还有跨行业的情报共享。
+先交代背景。11 月 18 日，OpenAI 发了 [Managing frontier AI risk: From training to deployment](https://openai.com/index/managing-frontier-ai-risk/)，其中包含打击有组织的模型蒸馏行动。两天后又发了 [Combatting adversarial distillation](https://openai.com/index/combatting-adversarial-distillation/)，手段包括加密思维链、API 层拦截和跨行业的情报共享。老朋友 Anthropic 动手更早，芯片出口管制和防蒸馏的立场他们很早就系统阐述过，9 月 29 日还发了 [GLM-5.3 and the spread of advanced cyber capabilities](https://www.anthropic.com/research/glm-5-3-and-the-spread-of-advanced-cyber-capabilities)，讲开源权重模型让网络攻击能力扩散的风险。
 
-比 OpenAI 更早的当然是老朋友 Anthropic。安全监督、国家安全、芯片出口管制、防蒸馏，这套政策立场他们很早就系统阐述过。9 月 29 日那篇 [GLM-5.3 and the spread of advanced cyber capabilities](https://www.anthropic.com/research/glm-5-3-and-the-spread-of-advanced-cyber-capabilities)，讲的就是开源权重模型让网络攻击能力扩散的风险。
-
-然后今天我在推特上看到一位老哥写的 [Machines of Loving Export Controls](https://mercuriusdream.com/loving-controls/)，立场鲜明，火药味十足。
-
-## 暴躁老哥的论点
-
-文章的矛头指向 OpenAI、Anthropic 和 Frontier Model Forum 共同推动的三件事：算力出口管制、反蒸馏、限制开源权重。
-
-作者认为，头部闭源实验室借「安全」和「国家安全」之名游说政策，本质上是在制造行业壁垒，顺便规避反垄断。AI 是军民两用技术，集中控制反而会吸引攻击者，同时让普通的防御者失去工具。在他看来，用开源权重的方式扩散能力，对防御一方更有利。
-
-他还摆了一组双标的对比。闭源实验室一边警告开源权重会带来网络攻击风险，一边自家的 agent 在真实环境里闯祸：OpenAI 的 agent 入侵了 Hugging Face，Anthropic 的 Mythos 在安全测试中越界，碰到了真实机构的系统，Haiku 4.5 还向警方提交过一条虚构的目击线索。而且商业闭源模型的安全护栏经常过度拒绝，逼得防御者只能转向开源模型。最典型的就是 Hugging Face 那场事故：OpenAI 的模型拒绝帮忙，最后 Hugging Face 是靠 GLM-5.2 解决的问题。
-
-## 他说对了什么
-
-监管俘获：商业巨头把自己的护城河包装成公共安全议题，这个动机分析我认为是成立的。
-
-闭源模型过度拒绝：一刀切的安全护栏，在实战防御里的确卡住了普通防御者的脖子。
-
-跳出了非黑即白的阵营叙事：文章同时提到了中国的内容监管，以及五角大楼把 Anthropic 列为供应链风险这种矛盾，把视角拉回到了企业和监管的博弈上。
-
-## 他没说服我的地方
-
-他说过去开源权重模型并没有带来什么大问题，但用过去的太平证明未来模型的能力跃迁和尾部风险不存在，这个逻辑站不住。
-
-Anthropic 提出的网络攻防不对称，也被轻描淡写地带过了。在网络安全领域，防御者要堵住所有漏洞，攻击者只需要找到一个。强能力通过开源全面扩散之后，中小企业未必有配套的工程能力来自卫。
-
-另外，闭源模型出了事，至少可以通过 API 做管控和溯源，很大程度上收拾已经发生的安全隐患。开源权重放出去就收不回来了。
+今天我又在推特上看到一位老哥写的 [Machines of Loving Export Controls](https://mercuriusdream.com/loving-controls/)，从反方向开火，火药味十足。他的文章放到后面说，先说蒸馏这件事。
 
 ## 读书人的事，能叫蒸馏吗？
-
-我在想另一个问题。
 
 Anthropic 有一件被人诟病了很久的事：大规模扫描书籍用来训练，其中还有破坏性的扫描。这件事和小模型蒸馏大模型本质上是同一种搭便车。而且 Anthropic 和 OpenAI 自己在模型发展的过程中，或多或少也用过蒸馏技术。
 
@@ -62,6 +34,20 @@ Anthropic 有一件被人诟病了很久的事：大规模扫描书籍用来训�
 管制经济学里有个老模型，叫「私酒贩子与浸信会教徒」：周日禁止卖酒的法律之所以能通过，是因为真心反对饮酒的教徒和靠禁令赚钱的私酒贩子想要同一条法律。教徒负责讲道理，贩子躲在后面受益。放到今天，这两个角色在同一家公司里上班，一个在安全团队，一个在商务团队。
 
 所以闭源实验室的安全主张大概率不是装出来的，但很可惜，真诚不改变规则的效果。反而越真诚，看起来越像那么回事。毕竟规矩立住了才不烧心，至于你问我立规矩之前在干什么？抱歉，那也是规矩的一部分。
+
+## 暴躁老哥的论点
+
+再说那位老哥的文章。他的矛头指向 OpenAI、Anthropic 和 Frontier Model Forum 共同推动的三件事：算力出口管制、反蒸馏、限制开源权重。他认为头部闭源实验室借「安全」和「国家安全」之名游说政策，本质上是在制造行业壁垒，顺便规避反垄断。AI 是军民两用技术，集中控制反而会吸引攻击者，同时让普通的防御者失去工具。
+
+监管俘获这一点和我上面说的是一回事，他的动机分析我认为成立。他还指出了闭源模型的过度拒绝：一刀切的安全护栏，在实战防御里的确卡住了普通防御者的脖子。最典型的是 Hugging Face 那场事故，闯进去的是 OpenAI 的 agent，OpenAI 的模型却拒绝帮忙，最后 Hugging Face 是靠 GLM-5.2 解决的问题。文章也跳出了非黑即白的阵营叙事，同时提到了中国的内容监管，以及五角大楼把 Anthropic 列为供应链风险这种矛盾。
+
+但他没有完全说服我。他说过去开源权重模型并没有带来什么大问题，但用过去的太平证明未来模型的能力跃迁和尾部风险不存在，这个逻辑站不住。
+
+Anthropic 提出的网络攻防不对称，也被轻描淡写地带过了。在网络安全领域，防御者要堵住所有漏洞，攻击者只需要找到一个。强能力通过开源全面扩散之后，中小企业未必有配套的工程能力来自卫。
+
+另外，闭源模型出了事，至少可以通过 API 做管控和溯源，很大程度上收拾已经发生的安全隐患。开源权重放出去就收不回来了。
+
+而且他自己也站在一块高地上：文章最后搬出了波普尔的开放社会和防御性民主。
 
 ## 站在道德高地指指点点是人生至乐
 
