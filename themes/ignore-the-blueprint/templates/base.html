@@ -19,7 +19,7 @@
     {% set meta_type = 'article' %}
   {% elif page and page.title %}
     {% set meta_title = page.title|striptags %}
-    {% set meta_description = SITESUBTITLE %}
+    {% set meta_description = (page.metadata.get('summary') or SITESUBTITLE)|striptags|trim %}
     {% set meta_url = SITEURL ~ '/' ~ page.url %}
     {% set meta_image = OG_DEFAULT_IMAGE %}
     {% set meta_type = 'website' %}
