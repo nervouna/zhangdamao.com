@@ -6,8 +6,6 @@ readonly expected_python_version="3.11.15"
 readonly expected_uv_version="0.11.2"
 readonly python_bin="python3"
 
-printf 'BLOGWRITER_PAGES_BUILD_V1\n'
-
 actual_python_version="$($python_bin -c 'import platform; print(platform.python_version())')"
 if [[ "$actual_python_version" != "$expected_python_version" ]]; then
   printf 'Expected Python %s, got %s.\n' "$expected_python_version" "$actual_python_version" >&2

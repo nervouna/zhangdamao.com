@@ -8,9 +8,8 @@ This is a Pelican-powered personal static site.
 - `content/pages/`: standalone pages such as `about.md`.
 - `content/images/` and `content/extra/`: static assets. Favicons and touch icons are mapped through `pelicanconf.py`.
 - `themes/ignore-the-blueprint/`: active custom theme, including Jinja templates and CSS.
-- `themes/pelican-alchemy/`: vendored/reference theme. Do not modify unless intentionally updating that theme.
 - `output/`: generated site output. Treat as build artifact.
-- Root scripts such as `create_post.py` and `generate_post_header.py` support local content workflows.
+- `scripts/build-pages.sh`: Cloudflare Pages production build entry point.
 
 ## Build, Test, and Development Commands
 
@@ -28,14 +27,13 @@ make html                 # Build the static site into output/
 make devserver PORT=8000  # Rebuild and serve locally with live reload
 make serve PORT=8000      # Serve without regeneration
 make clean                # Remove output/
-uv run python generate_post_header.py --help
 ```
 
 Use `make publish` only when `publishconf.py` exists and is intentionally configured.
 
 ## Coding Style & Naming Conventions
 
-Use concise, readable Python and explicit error handling for tooling scripts. Prefer `uv run` for Python entry points. Keep Markdown metadata consistent with existing posts. Use lowercase, hyphenated slugs and filenames, for example `content/posts/optimizing-zsh-config-on-mac.md`.
+Keep Markdown metadata consistent with existing posts. Use lowercase, hyphenated slugs and filenames, for example `content/posts/optimizing-zsh-config-on-mac.md`.
 
 Theme edits should follow the existing warm editorial style in `themes/ignore-the-blueprint/static/css/style.css`. Keep templates simple and avoid unrelated formatting churn.
 
@@ -53,8 +51,6 @@ For visual or layout changes, also run a local server and inspect the affected p
 make devserver PORT=8000
 ```
 
-If changing metadata-generation scripts, test the relevant command with `uv run python ...` on a specific file before broad scans.
-
 ## Commit & Pull Request Guidelines
 
 Use concise imperative commit messages with a type prefix, matching recent history:
@@ -71,4 +67,4 @@ Pull requests should include a short summary, verification steps such as `make h
 
 ## Security & Configuration Tips
 
-Do not commit secrets, API keys, or local `.env` files. Ollama-backed metadata generation is local; make sure the required model is installed before running header-generation workflows.
+Do not commit secrets, API keys, or local `.env` files.

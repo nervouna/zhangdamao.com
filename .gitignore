@@ -216,7 +216,7 @@ pyrightconfig.json
 pyvenv.cfg
 pip-selfcheck.json
 
-# Repository-owned Pages and readiness entry points.
+# Repository-owned Pages build entry point.
 !scripts/
 !scripts/*.sh
 
