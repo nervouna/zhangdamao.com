@@ -2,6 +2,7 @@ Title: About Me
 Date: 2023-05-11
 Modified: 2026-11-21
 Slug: about-me
+Summary: Product manager for Xiaomi's Android tablets by day; by night, shipping software that coding agents write and I review.
 
 I'm Zhang Damao, a product manager. By day I do product design for Android tablets at Xiaomi, where I look after the Xiaomi Pad series. By night I ship software I could never have written by hand: coding agents write the code, and I get to be the picky reviewer.
 
