@@ -21,6 +21,9 @@ TIMEZONE = 'Asia/Shanghai'
 DEFAULT_LANG = 'en'
 
 THEME = 'themes/ignore-the-blueprint'
+
+PLUGIN_PATHS = ['plugins']
+PLUGINS = ['og_cards']
 PYGMENTS_RST_OPTIONS = {'linenos': 'table'}
 
 ARTICLE_PATHS = ['posts']
@@ -36,6 +39,9 @@ CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
+
+# Used for the twitter:site card tag
+TWITTER_USERNAME = 'nervouna'
 
 # Social widget
 SOCIAL = (('Twitter', 'https://twitter.com/nervouna'),
