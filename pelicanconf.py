@@ -12,7 +12,6 @@ STATIC_PATHS = [
 EXTRA_PATH_METADATA = {
     'extra/favicon.ico': {'path': 'favicon.ico'},
     'extra/apple-touch-icon.png': {'path': 'apple-touch-icon.png'},
-    'extra/_redirects': {'path': '_redirects'},
 }
 
 PATH = 'content'
