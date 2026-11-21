@@ -31,19 +31,26 @@ VAD = "silero_vad.onnx"
 
 
 def fetch(cache, name, archive):
+    """Return the cached model, downloading it first if it is missing.
+
+    Work happens in a temporary directory inside the cache and is moved
+    into place only after it succeeds, so an interrupted download never
+    leaves a partial model behind.
+    """
     target = cache / name
     if target.exists():
         return target
     cache.mkdir(parents=True, exist_ok=True)
     url = f"{RELEASES}/{name}{'.tar.bz2' if archive else ''}"
     print(f"Downloading {url}", file=sys.stderr)
-    if archive:
-        tarball = cache / f"{name}.tar.bz2"
-        subprocess.run(["curl", "-fL", "--retry", "3", "-o", tarball, url], check=True)
-        subprocess.run(["tar", "xjf", tarball, "-C", cache], check=True)
-        tarball.unlink()
-    else:
-        subprocess.run(["curl", "-fL", "--retry", "3", "-o", target, url], check=True)
+    with tempfile.TemporaryDirectory(dir=cache) as tmp:
+        download = Path(tmp) / "download"
+        subprocess.run(["curl", "-fL", "--retry", "3", "-o", download, url], check=True)
+        if archive:
+            subprocess.run(["tar", "xjf", download, "-C", tmp], check=True)
+            (Path(tmp) / name).rename(target)
+        else:
+            download.rename(target)
     return target
 
 
