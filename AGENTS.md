@@ -88,7 +88,7 @@ Allowed types include `feat`, `fix`, `doc`, `chore`, `refactor`, `test`, and `st
 
 Pull requests should include a short summary, verification steps such as `make html`, and screenshots for visual theme changes.
 
-Merging to `main` deploys to production through Cloudflare Pages within a few minutes. Every PR branch gets a preview at `https://<branch-with-slashes-as-dashes>.zhangdamao-com.pages.dev`. Articles live at `/blog/YYYY/MM/DD/<slug>`.
+Merging to `main` deploys to production through Cloudflare Pages within a few minutes. Every PR branch gets a preview at `https://<branch-with-slashes-as-dashes>.zhangdamao-com.pages.dev`. Cloudflare cuts the branch part to 28 characters, so take the exact address from its comment on the PR. Preview builds use root-relative URLs (see `publishconf.py`), so they show the branch's own theme. Articles live at `/blog/YYYY/MM/DD/<slug>`.
 
 Squash-merge PRs with the title `<type>: <summary> (#N)`. Merge only when the author asks.
 

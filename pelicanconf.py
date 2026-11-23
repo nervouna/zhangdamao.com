@@ -1,3 +1,6 @@
+import hashlib
+from pathlib import Path
+
 AUTHOR = 'ZHANG Damao'
 SITENAME = 'Ignore the Blueprint'
 SITESUBTITLE = 'A blog about programming, life and everything.'
@@ -21,6 +24,11 @@ TIMEZONE = 'Asia/Shanghai'
 DEFAULT_LANG = 'en'
 
 THEME = 'themes/ignore-the-blueprint'
+# Appended to the stylesheet URL so a deploy never pairs new pages with a
+# cached copy of the old stylesheet.
+THEME_VERSION = hashlib.sha1(
+    Path(THEME, 'static/css/style.css').read_bytes()
+).hexdigest()[:8]
 
 PLUGIN_PATHS = ['plugins']
 PLUGINS = ['plates', 'og_cards', 'title_font']
@@ -44,7 +52,8 @@ AUTHOR_FEED_RSS = None
 TWITTER_USERNAME = 'nervouna'
 
 # Extra links in the site navigation
-MENUITEMS = (('Projects ↗', 'https://damao.io'),)
+# \uFE0E asks for the text form of the arrow; without it iOS draws an emoji.
+MENUITEMS = (('Projects ↗\uFE0E', 'https://damao.io'),)
 
 # Social widget
 SOCIAL = (('Twitter', 'https://twitter.com/nervouna'),
