@@ -7,8 +7,11 @@ This is a Pelican-powered personal static site.
 - `content/posts/`: blog posts in Markdown. Each post should include Pelican metadata such as `Title`, `Date`, `Slug`, `Category`, `Tags`, and `Summary`.
 - `content/pages/`: standalone pages such as `about.md`.
 - `content/images/` and `content/extra/`: static assets. Favicons and touch icons are mapped through `pelicanconf.py`.
-- `themes/ignore-the-blueprint/`: active custom theme, including Jinja templates and CSS.
-- `plugins/og_cards/`: Pelican plugin that renders a social preview card for every article into `output/og/<slug>.png` at build time, using the fonts bundled in `plugins/og_cards/fonts/`. Add an `Image:` metadata field (a site-relative path or a full URL) to a post to use its own picture instead. Pages and index pages share `og/default.png`.
+- `themes/ignore-the-blueprint/`: active custom theme, including Jinja templates, CSS and the self-hosted Latin web font.
+- `plugins/plates/`: gives every article a "plate", three overlapping circles placed by its date (month sets the medium circle's clock position, day sets the small one's). Templates print it as inline SVG via `article.plate`.
+- `plugins/og_cards/`: renders a social preview card for every article into `output/og/<slug>.png` at build time, showing its title and plate. Add an `Image:` metadata field (a site-relative path or a full URL) to a post to use its own picture instead. Pages and index pages share `og/default.png`.
+- `plugins/title_font/`: subsets Glow Sans SC down to the Chinese characters that appear in headings and writes it to `output/theme/fonts/` as WOFF2. Body text uses system fonts. The subset is cached in `.cache/title_font/`.
+- `plugins/fonts/`: source fonts shared by `og_cards` and `title_font`.
 - `output/`: generated site output. Treat as build artifact.
 - `scripts/build-pages.sh`: Cloudflare Pages production build entry point.
 
@@ -38,7 +41,7 @@ Keep Markdown metadata consistent with existing posts. Use lowercase, hyphenated
 
 Bilingual posts are two files with the same `Date`: `<slug>.md` (English) and `<slug>-cn.md` (Chinese, slug also ends in `-cn`). Each opens with a link to the other, written as `[中文版]({filename}<slug>-cn.md)` and `[English version]({filename}<slug>.md)`.
 
-Theme edits should follow the existing warm editorial style in `themes/ignore-the-blueprint/static/css/style.css`. Keep templates simple and avoid unrelated formatting churn.
+Theme edits should follow the style described at the top of `themes/ignore-the-blueprint/static/css/style.css`: cool white ground, straight lines and right angles, heavy rules for real breaks, and vermilion as the only interface colour. Circles (the site mark and the plates) are the one exception, and blue and yellow appear in plates only. Keep templates simple and avoid unrelated formatting churn.
 
 ## Writing Style
 

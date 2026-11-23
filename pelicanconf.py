@@ -23,7 +23,7 @@ DEFAULT_LANG = 'en'
 THEME = 'themes/ignore-the-blueprint'
 
 PLUGIN_PATHS = ['plugins']
-PLUGINS = ['og_cards']
+PLUGINS = ['plates', 'og_cards', 'title_font']
 PYGMENTS_RST_OPTIONS = {'linenos': 'table'}
 
 ARTICLE_PATHS = ['posts']
@@ -42,6 +42,9 @@ AUTHOR_FEED_RSS = None
 
 # Used for the twitter:site card tag
 TWITTER_USERNAME = 'nervouna'
+
+# Extra links in the site navigation
+MENUITEMS = (('Projects ↗', 'https://damao.io'),)
 
 # Social widget
 SOCIAL = (('Twitter', 'https://twitter.com/nervouna'),
