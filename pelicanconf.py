@@ -14,6 +14,7 @@ STATIC_PATHS = [
 ]
 EXTRA_PATH_METADATA = {
     'extra/favicon.ico': {'path': 'favicon.ico'},
+    'extra/favicon.svg': {'path': 'favicon.svg'},
     'extra/apple-touch-icon.png': {'path': 'apple-touch-icon.png'},
 }
 

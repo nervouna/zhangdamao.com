@@ -6,7 +6,7 @@ This is a Pelican-powered personal static site.
 
 - `content/posts/`: blog posts in Markdown. Each post should include Pelican metadata such as `Title`, `Date`, `Slug`, `Category`, `Tags`, and `Summary`.
 - `content/pages/`: standalone pages such as `about.md`.
-- `content/images/` and `content/extra/`: static assets. Favicons and touch icons are mapped through `pelicanconf.py`.
+- `content/images/` and `content/extra/`: static assets. Favicons and touch icons are mapped through `pelicanconf.py`. The icons are drawn from the site mark by `scripts/build-icons.py`.
 - `themes/ignore-the-blueprint/`: active custom theme, including Jinja templates, CSS and the self-hosted Latin web font.
 - `plugins/plates/`: gives every article a "plate", three overlapping circles placed by its date (month sets the medium circle's clock position, day sets the small one's). Templates print it as inline SVG via `article.plate`.
 - `plugins/og_cards/`: renders a social preview card for every article into `output/og/<slug>.png` at build time, showing its title and plate. Add an `Image:` metadata field (a site-relative path or a full URL) to a post to use its own picture instead. Pages and index pages share `og/default.png`.
