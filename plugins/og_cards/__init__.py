@@ -141,44 +141,50 @@ def _draw_text(draw, x, baseline, text, size, fill, latin=LATIN_BOLD):
     return x
 
 
-def _draw_plate(image, circles, left, top, size):
-    """Draw a plate's circles, with every overlap filled in ink."""
+def _draw_circles(image, circles, left, top, width, height, units):
+    """Draw circles given in ``units`` per ``width``, every overlap in ink."""
     scale = 3
-    side = size * scale
-    unit = side / PLATE_UNITS
+    size = (width * scale, height * scale)
+    unit = size[0] / units
 
     def box(circle):
         x, y, r = circle
         return [(x - r) * unit, (y - r) * unit, (x + r) * unit, (y + r) * unit]
 
-    layer = Image.new("RGB", (side, side), PAGE)
+    layer = Image.new("RGB", size, PAGE)
     draw = ImageDraw.Draw(layer)
     masks = []
     for circle, colour in zip(circles, PLATE_COLOURS):
         draw.ellipse(box(circle), fill=colour)
-        mask = Image.new("L", (side, side), 0)
+        mask = Image.new("L", size, 0)
         ImageDraw.Draw(mask).ellipse(box(circle), fill=255)
         masks.append(mask)
-    for i, j in ((0, 1), (0, 2), (1, 2)):
-        layer.paste(INK, mask=ImageChops.multiply(masks[i], masks[j]))
-    image.paste(layer.resize((size, size), Image.LANCZOS), (left, top))
+    for i in range(len(masks)):
+        for j in range(i + 1, len(masks)):
+            layer.paste(INK, mask=ImageChops.multiply(masks[i], masks[j]))
+    image.paste(layer.resize((width, height), Image.LANCZOS), (left, top))
 
 
-def render_card(path, title, site_name, footer_left, footer_right, circles):
+def render_card(path, title, site_name, footer_left, footer_right, circles, mark):
     image = Image.new("RGB", (WIDTH, HEIGHT), PAGE)
     draw = ImageDraw.Draw(image)
 
     # Header: the site mark and name over a heavy rule, as in the site header.
-    draw.ellipse([MARGIN, 78, MARGIN + 28, 106], fill=RED)
+    mark_circles, (mark_units, mark_rows) = mark
+    mark_height = 36
+    mark_width = round(mark_height * mark_units / mark_rows)
+    _draw_circles(image, mark_circles, MARGIN, 74, mark_width, mark_height, mark_units)
     if site_name:
-        _draw_text(draw, MARGIN + 44, 104, site_name, 32, INK)
+        _draw_text(draw, MARGIN + mark_width + 14, 104, site_name, 32, INK)
     draw.rectangle(
         [MARGIN, RULE_TOP, WIDTH - MARGIN, RULE_TOP + RULE_WEIGHT - 1], fill=INK
     )
 
     # Plate on the right, centred between the rule and the footer.
     plate_top = RULE_TOP + RULE_WEIGHT + (FOOTER_TOP - RULE_TOP - RULE_WEIGHT - PLATE_SIZE) // 2
-    _draw_plate(image, circles, WIDTH - MARGIN - PLATE_SIZE, plate_top, PLATE_SIZE)
+    _draw_circles(
+        image, circles, WIDTH - MARGIN - PLATE_SIZE, plate_top, PLATE_SIZE, PLATE_SIZE, PLATE_UNITS
+    )
 
     # Title, hanging from the rule on the left.
     size, lines = _fit_title(title, TITLE_WIDTH)
@@ -224,6 +230,7 @@ def write_cards(generator, writer):
     output = Path(generator.output_path)
     site_name = settings.get("SITENAME", "")
     domain = settings.get("SITEURL", "").split("//")[-1].strip("/")
+    mark = (generator.context["MARK_CIRCLES"], generator.context["MARK_BOX"])
 
     render_card(
         output / DEFAULT_CARD,
@@ -232,6 +239,7 @@ def write_cards(generator, writer):
         settings.get("SITESUBTITLE", ""),
         domain,
         generator.context["DEFAULT_PLATE_CIRCLES"],
+        mark,
     )
     for article in _all_articles(generator):
         if article.metadata.get("image"):
@@ -246,6 +254,7 @@ def write_cards(generator, writer):
             footer,
             domain,
             article.plate_circles,
+            mark,
         )
 
 

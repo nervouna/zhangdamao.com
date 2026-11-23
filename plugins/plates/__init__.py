@@ -12,6 +12,10 @@ Sets two attributes on each article:
   ``og_cards`` plugin uses to draw the same plate on the social card.
 
 ``DEFAULT_PLATE_CIRCLES`` is the plate for things without a date of their own.
+
+Every template also gets ``SITE_MARK``, the site's mark as inline SVG: two of
+the same circles with their overlap in ink. ``MARK_CIRCLES`` and ``MARK_BOX``
+describe it for the ``og_cards`` plugin.
 """
 
 import math
@@ -39,6 +43,10 @@ def circles(month, day):
 
 
 DEFAULT_PLATE_CIRCLES = circles(2, 21)
+
+# A lone red disc on white reads as the Japanese flag, so the mark is a pair.
+MARK_BOX = (36, 30)
+MARK_CIRCLES = [(14, 16, 13), (26, 10, 9)]
 
 
 def _n(value):
@@ -73,20 +81,27 @@ def _overlap_path(a, b):
     )
 
 
-def svg(plate_circles):
+def svg(plate_circles, css_class="plate", box=(SIZE, SIZE)):
     parts = [
-        f'<svg class="plate" viewBox="0 0 {SIZE} {SIZE}" aria-hidden="true">'
+        f'<svg class="{css_class}" viewBox="0 0 {box[0]} {box[1]}" aria-hidden="true">'
     ]
     for index, (x, y, r) in enumerate(plate_circles, start=1):
         parts.append(f'<circle class="k{index}" cx="{_n(x)}" cy="{_n(y)}" r="{_n(r)}"/>')
     overlaps = "".join(
         _overlap_path(plate_circles[i], plate_circles[j])
-        for i, j in ((0, 1), (0, 2), (1, 2))
+        for i in range(len(plate_circles))
+        for j in range(i + 1, len(plate_circles))
     )
     if overlaps:
         parts.append(f'<path class="x" d="{overlaps}"/>')
     parts.append("</svg>")
     return Markup("".join(parts))
+
+
+def add_site_mark(generator):
+    generator.context["SITE_MARK"] = svg(MARK_CIRCLES, "site-mark", MARK_BOX)
+    generator.context["MARK_CIRCLES"] = MARK_CIRCLES
+    generator.context["MARK_BOX"] = MARK_BOX
 
 
 def assign_plates(generator):
@@ -103,4 +118,5 @@ def assign_plates(generator):
 
 
 def register():
+    signals.generator_init.connect(add_site_mark)
     signals.article_generator_finalized.connect(assign_plates)
