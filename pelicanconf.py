@@ -1,3 +1,6 @@
+import hashlib
+from pathlib import Path
+
 AUTHOR = 'ZHANG Damao'
 SITENAME = 'Ignore the Blueprint'
 SITESUBTITLE = 'A blog about programming, life and everything.'
@@ -11,6 +14,7 @@ STATIC_PATHS = [
 ]
 EXTRA_PATH_METADATA = {
     'extra/favicon.ico': {'path': 'favicon.ico'},
+    'extra/favicon.svg': {'path': 'favicon.svg'},
     'extra/apple-touch-icon.png': {'path': 'apple-touch-icon.png'},
 }
 
@@ -21,9 +25,14 @@ TIMEZONE = 'Asia/Shanghai'
 DEFAULT_LANG = 'en'
 
 THEME = 'themes/ignore-the-blueprint'
+# Appended to the stylesheet URL so a deploy never pairs new pages with a
+# cached copy of the old stylesheet.
+THEME_VERSION = hashlib.sha1(
+    Path(THEME, 'static/css/style.css').read_bytes()
+).hexdigest()[:8]
 
 PLUGIN_PATHS = ['plugins']
-PLUGINS = ['og_cards']
+PLUGINS = ['plates', 'og_cards', 'title_font']
 PYGMENTS_RST_OPTIONS = {'linenos': 'table'}
 
 ARTICLE_PATHS = ['posts']
@@ -42,6 +51,10 @@ AUTHOR_FEED_RSS = None
 
 # Used for the twitter:site card tag
 TWITTER_USERNAME = 'nervouna'
+
+# Extra links in the site navigation
+# \uFE0E asks for the text form of the arrow; without it iOS draws an emoji.
+MENUITEMS = (('Projects ↗\uFE0E', 'https://damao.io'),)
 
 # Social widget
 SOCIAL = (('Twitter', 'https://twitter.com/nervouna'),

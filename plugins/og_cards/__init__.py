@@ -1,38 +1,46 @@
 """Generate a social preview card (Open Graph image) for every article.
 
 Each article gets ``og/<slug>.png`` (1200x630) showing its title in the
-theme's display fonts. Articles can opt out with an ``Image:`` metadata
-field pointing at their own picture. Pages and index pages use
-``og/default.png``, which shows the site name and subtitle.
+theme's heading fonts next to its plate (see the ``plates`` plugin, which
+must be listed before this one in ``PLUGINS``). Articles can opt out with an
+``Image:`` metadata field pointing at their own picture. Pages and index
+pages use ``og/default.png``, which shows the site name and subtitle.
 """
 
 from pathlib import Path
 
 from pelican import signals
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 
-FONT_DIR = Path(__file__).parent / "fonts"
-LATIN_FONT = FONT_DIR / "Spectral-Medium.ttf"
-CJK_FONT = FONT_DIR / "NotoSerifSC-Medium.otf"
+FONT_DIR = Path(__file__).parent.parent / "fonts"
+LATIN_BOLD = FONT_DIR / "Archivo-ExtraBold.ttf"
+LATIN_TEXT = FONT_DIR / "Archivo-SemiBold.ttf"
+CJK_FONT = FONT_DIR / "GlowSansSC-Normal-Heavy.otf"
 
 WIDTH, HEIGHT = 1200, 630
-MARGIN = 88
+MARGIN = 80
 DEFAULT_CARD = "og/default.png"
 
-# sRGB equivalents of the design tokens in the theme's style.css.
-PAGE = "#f9f6f3"
-INK = "#15110c"
-MUTED = "#615d58"
-RULE = "#d3d0cd"
-ACCENT = "#9e4421"
+# sRGB equivalents of the light-theme tokens in the theme's style.css.
+PAGE = "#f9fbfc"
+INK = "#0c1014"
+MUTED = "#565b61"
+RED = "#e03106"
+BLUE = "#093da1"
+YELLOW = "#f6d32b"
+PLATE_COLOURS = (RED, BLUE, YELLOW)
 
-TITLE_SIZES = (84, 72, 62, 54, 46)
-MAX_TITLE_LINES = 3
-LINE_SPACING = 1.32
-HEADER_BOTTOM = 148
+RULE_TOP = 138
+RULE_WEIGHT = 6
 FOOTER_TOP = HEIGHT - 110
-# Room the title block may use, leaving space for the accent bar above it.
-TITLE_AREA = FOOTER_TOP - HEADER_BOTTOM - 96
+PLATE_SIZE = 340
+PLATE_UNITS = 100
+TITLE_TOP = RULE_TOP + RULE_WEIGHT + 40
+TITLE_WIDTH = WIDTH - 2 * MARGIN - PLATE_SIZE - 48
+TITLE_AREA = FOOTER_TOP - TITLE_TOP - 16
+TITLE_SIZES = (76, 66, 58, 50, 44)
+MAX_TITLE_LINES = 4
+LINE_SPACING = 1.25
 NO_LINE_START = set("，。！？、；：」』）》〉】…—,.!?;:)]}")
 NO_LINE_END = set("「『（《〈【([{")
 
@@ -50,11 +58,11 @@ def _is_cjk(char):
     return ord(char) >= 0x2E80
 
 
-def _runs(text, size):
+def _runs(text, size, latin=LATIN_BOLD):
     """Split text into (run, font) pairs so each script uses its own face."""
     runs = []
     for char in text:
-        path = CJK_FONT if _is_cjk(char) else LATIN_FONT
+        path = CJK_FONT if _is_cjk(char) else latin
         if runs and runs[-1][1] == path:
             runs[-1][0] += char
         else:
@@ -62,8 +70,8 @@ def _runs(text, size):
     return [(run, _font(path, size)) for run, path in runs]
 
 
-def _width(text, size):
-    return sum(font.getlength(run) for run, font in _runs(text, size))
+def _width(text, size, latin=LATIN_BOLD):
+    return sum(font.getlength(run) for run, font in _runs(text, size, latin))
 
 
 def _tokens(text):
@@ -126,44 +134,71 @@ def _fit_title(title, max_width):
     return size, lines
 
 
-def _draw_text(draw, x, baseline, text, size, fill):
-    for run, font in _runs(text, size):
+def _draw_text(draw, x, baseline, text, size, fill, latin=LATIN_BOLD):
+    for run, font in _runs(text, size, latin):
         draw.text((x, baseline), run, font=font, fill=fill, anchor="ls")
         x += font.getlength(run)
     return x
 
 
-def render_card(path, title, site_name, footer_left, footer_right):
+def _draw_circles(image, circles, left, top, width, height, units):
+    """Draw circles given in ``units`` per ``width``, every overlap in ink."""
+    scale = 3
+    size = (width * scale, height * scale)
+    unit = size[0] / units
+
+    def box(circle):
+        x, y, r = circle
+        return [(x - r) * unit, (y - r) * unit, (x + r) * unit, (y + r) * unit]
+
+    layer = Image.new("RGB", size, PAGE)
+    draw = ImageDraw.Draw(layer)
+    masks = []
+    for circle, colour in zip(circles, PLATE_COLOURS):
+        draw.ellipse(box(circle), fill=colour)
+        mask = Image.new("L", size, 0)
+        ImageDraw.Draw(mask).ellipse(box(circle), fill=255)
+        masks.append(mask)
+    for i in range(len(masks)):
+        for j in range(i + 1, len(masks)):
+            layer.paste(INK, mask=ImageChops.multiply(masks[i], masks[j]))
+    image.paste(layer.resize((width, height), Image.LANCZOS), (left, top))
+
+
+def render_card(path, title, site_name, footer_left, footer_right, circles, mark):
     image = Image.new("RGB", (WIDTH, HEIGHT), PAGE)
     draw = ImageDraw.Draw(image)
-    max_width = WIDTH - 2 * MARGIN
 
-    # Header: site name over a hairline, as in the site header.
+    # Header: the site mark and name over a heavy rule, as in the site header.
+    mark_circles, (mark_units, mark_rows) = mark
+    mark_height = 36
+    mark_width = round(mark_height * mark_units / mark_rows)
+    _draw_circles(image, mark_circles, MARGIN, 74, mark_width, mark_height, mark_units)
     if site_name:
-        _draw_text(draw, MARGIN, HEADER_BOTTOM - 30, site_name, 34, INK)
-        draw.line(
-            [(MARGIN, HEADER_BOTTOM), (WIDTH - MARGIN, HEADER_BOTTOM)],
-            fill=RULE,
-            width=2,
-        )
+        _draw_text(draw, MARGIN + mark_width + 14, 104, site_name, 32, INK)
+    draw.rectangle(
+        [MARGIN, RULE_TOP, WIDTH - MARGIN, RULE_TOP + RULE_WEIGHT - 1], fill=INK
+    )
 
-    # Title block, vertically centred between header and footer.
-    size, lines = _fit_title(title, max_width)
-    line_height = round(size * LINE_SPACING)
-    block = _block_height(size, len(lines))
-    top = HEADER_BOTTOM + 48 + (FOOTER_TOP - HEADER_BOTTOM - 48 - block) // 2
-    draw.rectangle([MARGIN, top - 34, MARGIN + 56, top - 29], fill=ACCENT)
-    baseline = top + round(size * 0.86)
+    # Plate on the right, centred between the rule and the footer.
+    plate_top = RULE_TOP + RULE_WEIGHT + (FOOTER_TOP - RULE_TOP - RULE_WEIGHT - PLATE_SIZE) // 2
+    _draw_circles(
+        image, circles, WIDTH - MARGIN - PLATE_SIZE, plate_top, PLATE_SIZE, PLATE_SIZE, PLATE_UNITS
+    )
+
+    # Title, hanging from the rule on the left.
+    size, lines = _fit_title(title, TITLE_WIDTH)
+    baseline = TITLE_TOP + round(size * 0.86)
     for line in lines:
         _draw_text(draw, MARGIN, baseline, line, size, INK)
-        baseline += line_height
+        baseline += round(size * LINE_SPACING)
 
     # Footer: date and category on the left, domain on the right.
     if footer_left:
-        _draw_text(draw, MARGIN, HEIGHT - 62, footer_left, 28, MUTED)
+        _draw_text(draw, MARGIN, HEIGHT - 62, footer_left, 26, MUTED, LATIN_TEXT)
     if footer_right:
-        right = WIDTH - MARGIN - _width(footer_right, 28)
-        _draw_text(draw, right, HEIGHT - 62, footer_right, 28, MUTED)
+        right = WIDTH - MARGIN - _width(footer_right, 26, LATIN_TEXT)
+        _draw_text(draw, right, HEIGHT - 62, footer_right, 26, MUTED, LATIN_TEXT)
 
     path.parent.mkdir(parents=True, exist_ok=True)
     image.save(path, optimize=True)
@@ -195,6 +230,7 @@ def write_cards(generator, writer):
     output = Path(generator.output_path)
     site_name = settings.get("SITENAME", "")
     domain = settings.get("SITEURL", "").split("//")[-1].strip("/")
+    mark = (generator.context["MARK_CIRCLES"], generator.context["MARK_BOX"])
 
     render_card(
         output / DEFAULT_CARD,
@@ -202,6 +238,8 @@ def write_cards(generator, writer):
         "",
         settings.get("SITESUBTITLE", ""),
         domain,
+        generator.context["DEFAULT_PLATE_CIRCLES"],
+        mark,
     )
     for article in _all_articles(generator):
         if article.metadata.get("image"):
@@ -210,7 +248,13 @@ def write_cards(generator, writer):
         if getattr(article, "category", None):
             footer += f"   {article.category}"
         render_card(
-            output / _card_path(article), article.title, site_name, footer, domain
+            output / _card_path(article),
+            article.title,
+            site_name,
+            footer,
+            domain,
+            article.plate_circles,
+            mark,
         )
 
 

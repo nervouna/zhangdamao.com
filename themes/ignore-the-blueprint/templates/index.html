@@ -1,47 +1,67 @@
 {% extends "base.html" %}
 
+{% block nav_blog %}{% if not category and not tag and not author %} aria-current="page"{% endif %}{% endblock %}
+
 {% block content %}
+{% if category %}
+<div class="row intro"><p><span class="label">Category</span><strong>{{ category }}</strong></p></div>
+{% elif tag %}
+<div class="row intro"><p><span class="label">Tag</span><strong>{{ tag }}</strong></p></div>
+{% elif author %}
+<div class="row intro"><p><span class="label">Author</span><strong>{{ author }}</strong></p></div>
+{% elif articles_page.number == 1 and SITESUBTITLE %}
+<div class="row intro"><p>{{ SITESUBTITLE }}</p></div>
+{% endif %}
+
 {% if articles_page.object_list %}
-<ol class="post-list">
-{% for article in articles_page.object_list %}
-  <li class="post-item">
-    <time class="post-date" datetime="{{ article.date.isoformat() }}">
-      {{ article.date.strftime('%Y.%m.%d') }}
-    </time>
-    <h2 class="post-title">
-      <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a>
-    </h2>
-    {% if article.category %}
-    <a class="post-category" href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
-    {% endif %}
-    {% if article.summary %}
-    <p class="post-summary">{{ article.summary|striptags|truncate(160) }}</p>
-    {% endif %}
-  </li>
+{% for year, year_articles in articles_page.object_list|groupby('date.year')|reverse %}
+<section class="row year">
+  <h2 class="year-name">{{ year }}</h2>
+  <ol class="post-list">
+  {% for article in year_articles %}
+    <li class="post-item">
+      <div>
+        <div class="post-meta">
+          <time class="post-date" datetime="{{ article.date.isoformat() }}">{{ article.date.strftime('%m.%d') }}</time>
+          {% if article.category %}
+          <a class="post-category label" href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
+          {% endif %}
+        </div>
+        <h3 class="post-title">
+          <a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a>
+        </h3>
+        {% if article.summary %}
+        <p class="post-summary">{{ article.summary|striptags|truncate(160) }}</p>
+        {% endif %}
+      </div>
+      <div class="post-plate">{{ article.plate }}</div>
+    </li>
+  {% endfor %}
+  </ol>
+</section>
 {% endfor %}
-</ol>
 
 {% if articles_page.has_other_pages() %}
-<nav class="pagination">
-  {% if articles_page.has_previous() %}
-    {% set prev = articles_page.previous_page_number() %}
-    <a class="pagination-prev" href="{{ SITEURL }}/{% if prev == 1 %}index.html{% else %}index{{ prev }}.html{% endif %}">← Newer</a>
-  {% else %}
-  <span class="pagination-prev pagination-inactive">← Newer</span>
-  {% endif %}
-  <span class="pagination-info">{{ articles_page.number }} / {{ articles_page.paginator.num_pages }}</span>
-  {% if articles_page.has_next() %}
-    {% set next = articles_page.next_page_number() %}
-  <a class="pagination-next" href="{{ SITEURL }}/index{{ next }}.html">Older →</a>
-  {% else %}
-  <span class="pagination-next pagination-inactive">Older →</span>
-  {% endif %}
+<nav class="row pagination" aria-label="Pagination">
+  <div class="pagination-inner">
+    {% if articles_page.has_previous() %}
+    <a class="pagination-prev" href="{{ SITEURL }}/{{ articles_previous_page.url }}">← Newer</a>
+    {% else %}
+    <span class="pagination-prev pagination-inactive">← Newer</span>
+    {% endif %}
+    <span class="pagination-info">{{ articles_page.number }} / {{ articles_page.paginator.num_pages }}</span>
+    {% if articles_page.has_next() %}
+    <a class="pagination-next" href="{{ SITEURL }}/{{ articles_next_page.url }}">Older →</a>
+    {% else %}
+    <span class="pagination-next pagination-inactive">Older →</span>
+    {% endif %}
+  </div>
 </nav>
 {% endif %}
 
 {% else %}
-<div class="empty-state">
-  <p>Nothing here yet. Check back soon.</p>
+<div class="row empty-state">
+  <p class="row-main">Nothing here yet. Check back soon.</p>
 </div>
 {% endif %}
 {% endblock %}

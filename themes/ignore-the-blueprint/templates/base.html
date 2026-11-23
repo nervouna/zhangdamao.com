@@ -59,45 +59,59 @@
 
   {% block extra_head %}{% endblock %}
 
-  <link rel="preconnect" href="https://fonts.loli.net" />
-  <link rel="stylesheet"
-        href="https://fonts.loli.net/css2?family=Noto+Sans:ital,wght@0,400;0,500;1,400&family=Noto+Sans+SC:wght@400;500&family=Noto+Serif+SC:wght@300;500&family=Spectral:ital,wght@0,300;0,500;1,300&display=swap" />
+  <link rel="preload" href="{{ SITEURL }}/theme/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
+  {% if TITLE_FONT %}
+  <link rel="preload" href="{{ SITEURL }}/{{ TITLE_FONT }}" as="font" type="font/woff2" crossorigin />
+  <style>
+    @font-face {
+      font-family: "Glow Sans SC Titles";
+      src: url("{{ SITEURL }}/{{ TITLE_FONT }}") format("woff2");
+      font-weight: 700 900;
+      font-display: swap;
+    }
+  </style>
+  {% endif %}
 
-  <link rel="stylesheet" href="{{ SITEURL }}/theme/css/style.css" />
+  <link rel="stylesheet" href="{{ SITEURL }}/theme/css/style.css?v={{ THEME_VERSION }}" />
 
   {% if FEED_ALL_ATOM %}
   <link rel="alternate" type="application/atom+xml" title="{{ SITENAME }} Atom Feed" href="{{ SITEURL }}/{{ FEED_ALL_ATOM }}" />
   {% endif %}
 
   <link rel="icon" href="{{ SITEURL }}/favicon.ico" sizes="32x32" />
+  <link rel="icon" href="{{ SITEURL }}/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="{{ SITEURL }}/apple-touch-icon.png" />
 </head>
 <body>
   <header class="site-header">
-    <a class="site-name" href="{{ SITEURL }}/">{{ SITENAME }}</a>
-    <nav class="site-nav">
-      <a href="{{ SITEURL }}/">Blog</a>
-      <a href="{{ SITEURL }}/about-me/">About</a>
-    </nav>
+    <div class="wrap">
+      <a class="site-name" href="{{ SITEURL }}/">{{ SITE_MARK }}{{ SITENAME }}</a>
+      <nav class="site-nav">
+        <a href="{{ SITEURL }}/"{% block nav_blog %}{% endblock %}>Blog</a>
+        <a href="{{ SITEURL }}/about-me/"{% block nav_about %}{% endblock %}>About</a>
+        {% for title, url in MENUITEMS %}
+        <a href="{{ url }}">{{ title }}</a>
+        {% endfor %}
+      </nav>
+    </div>
   </header>
 
-  <main class="site-main">
+  <main class="site-main wrap">
     {% block content %}{% endblock %}
   </main>
 
   <footer class="site-footer">
-    <div class="footer-row">
-      <span>{{ AUTHOR }}</span>
-      <span class="footer-sep"></span>
-      {% for name, url in SOCIAL %}
-      <a href="{{ url }}">{{ name }}</a>{% if not loop.last %}<span class="footer-sep"></span>{% endif %}
-      {% endfor %}
+    <div class="wrap">
+      <div class="footer-row">
+        <span class="footer-author">{{ AUTHOR }}</span>
+        {% for name, url in SOCIAL %}
+        <a href="{{ url }}">{{ name }}</a>
+        {% endfor %}
+        {% if FEED_ALL_ATOM %}
+        <a href="{{ SITEURL }}/{{ FEED_ALL_ATOM }}">Atom Feed</a>
+        {% endif %}
+      </div>
     </div>
-    {% if FEED_ALL_ATOM %}
-    <div class="footer-row footer-feed">
-      <a href="{{ SITEURL }}/{{ FEED_ALL_ATOM }}">Atom Feed</a>
-    </div>
-    {% endif %}
   </footer>
 </body>
 </html>
